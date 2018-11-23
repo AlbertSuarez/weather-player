@@ -1,9 +1,8 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_cors import CORS
 
-from src import *
 
-flask_app = Flask(__name__)
+flask_app = Flask(__name__, template_folder='templates/')
 flask_app.config['JSON_AS_ASCII'] = False
 
 CORS(flask_app)
@@ -11,7 +10,7 @@ CORS(flask_app)
 
 @flask_app.route('/')
 def index():
-    return 'Hello world!', 200
+    return render_template('index.html')
 
 
 @flask_app.route('/playlist')
