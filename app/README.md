@@ -10,22 +10,26 @@ Usage of [virtualenv](https://realpython.com/blog/python/python-virtual-environm
 To run the server, please execute the following from the root directory:
 
 **1**. Setup virtual environment
-    ```
-    python3 -m venv env
-    source env/bin/activate
-    ```
+
+```bash
+python3 -m venv env
+source env/bin/activate
+```
 
 **2**. Install dependencies
-    ```
-    pip3 install -r requirements.txt
-    ```
+
+```bash
+pip3 install -r requirements.txt
+```
 
 **3**. Run Startup server as python module
-    ```
-    python3 -m src
-    ```
+
+```bash
+python3 -m src
+```
 
 **4**. Open your browser to here:
-    ```
-    http://localhost:8081/
-    ```
+
+```bash
+http://localhost:8081/
+```
