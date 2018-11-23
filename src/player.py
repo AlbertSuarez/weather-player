@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
+from src import *
 
 flask_app = Flask(__name__)
 flask_app.config['JSON_AS_ASCII'] = False
