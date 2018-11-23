@@ -1,4 +1,4 @@
-from src.app import flask_app
+from src.player import flask_app
 
 
 if __name__ == '__main__':

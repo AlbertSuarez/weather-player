@@ -1,11 +1,10 @@
 version: '3'
 services:
 
-  # App
   weather-player-app:
     container_name: weather-player-app
     build:
-      context: app
+      context: .
       dockerfile: Dockerfile
     networks:
       - weather-player
@@ -18,7 +17,7 @@ services:
   weather-player-nginx:
     container_name: weather-player-nginx
     build:
-      context: app
+      context: .
       dockerfile: Dockerfile-nginx
     networks:
       - weather-player
@@ -26,7 +25,6 @@ services:
       - 8081:8081
     restart: always
 
-# Weather-Player network
 networks:
   weather-player:
     external:
