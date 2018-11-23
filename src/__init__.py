@@ -1,10 +1,10 @@
-__all__ = {
+__all__ = [
     "WET",
     "GLOOMY",
     "FREEZE",
     "HOT",
     "NICE"
-}
+]
 
 WET = "wet"
 GLOOMY = "gloomy"
