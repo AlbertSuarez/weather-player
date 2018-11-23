@@ -1,0 +1,33 @@
+version: '3'
+services:
+
+  # App
+  weather-player-app:
+    container_name: weather-player-app
+    build:
+      context: app
+      dockerfile: Dockerfile
+    networks:
+      - weather-player
+    ports:
+      - 9081:9081
+      - 3081:3081
+    restart: always
+    depends_on:
+      - weather-player-nginx
+  weather-player-nginx:
+    container_name: weather-player-nginx
+    build:
+      context: app
+      dockerfile: Dockerfile-nginx
+    networks:
+      - weather-player
+    ports:
+      - 8081:8081
+    restart: always
+
+# Weather-Player network
+networks:
+  weather-player:
+    external:
+      name: weather-player
