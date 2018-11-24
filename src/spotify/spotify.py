@@ -12,8 +12,7 @@ SPOTIFY_REDIRECT_URI = SPOTIFY_SRV_BASE_URL.format('/callback')
 SPOTIFY_AUTH_SCOPES = ['playlist-modify-public', 'user-top-read']
 SPOTIFY_CLIENT_ID = '1a47f705dfca49b09c7ea6fec6070b8d'
 SPOTIFY_CLIENT_SECRET = '8546bb88f48541f585f208c3b86c6f33'
-SPOTIFY_ACCESS_TOKEN = None
-SPOTIFY_TOKEN_EXPIRE = None
+SPOTIFY_STATE_DICT = {}
 
 def __str2bytes(str):
     return str.encode("utf-8")
@@ -56,13 +55,38 @@ def get_new_auth_state(
         charset=string.ascii_uppercase+string.ascii_lowercase+string.digits):
     return ''.join(random.choice(charset) for _ in range(size))
 
-def spotify_request_access_token():
+
+def auth_bind_pair(auth_state, auth_code):
+    SPOTIFY_STATE_DICT.update({
+        auth_state: {
+            'count': 0,
+            'access': auth_code,
+            'refresh': None,
+            'expire': None
+        }
+    })
+
+def request_access_token(auth_state):
+    if auth_state not in SPOTIFY_STATE_DICT:
+        print('FATAL ERROR!!!')
+        print('The state <{state}> should be registered'.format(auth_state))
+        return
+    if SPOTIFY_STATE_DICT[auth_state]['count'] == 0:
+        params = {
+            'grant_type': 'authorization_code',
+            'code': SPOTIFY_STATE_DICT[auth_state]['access'],
+            'redirect_uri': SPOTIFY_REDIRECT_URI
+        }
+    else:
+        params = {
+            'grant_type': 'refresh_token',
+            'refresh_token': SPOTIFY_STATE_DICT[auth_state]['refresh']
+        }
+
     status_code, content = do_request(
         SPOTIFY_API_BASE_URL.format('/api/token'),
         'post',
-        params={
-            'grant_type': 'client_credentials'
-        },
+        params=params,
         headers={
             'Authorization': 'Basic {}'.format(
                 __bytes2str(base64.b64encode(
@@ -77,11 +101,15 @@ def spotify_request_access_token():
     )
     if status_code == 200:
         content = json.loads(__bytes2str(content))
-        duration_seconds = int(content['expires_in'])
+
+        duration_seconds = int(content.get('expires_in', 0))
         expire_date = datetime.datetime.now() + datetime.timedelta(0, duration_seconds)
 
-        SPOTIFY_ACCESS_TOKEN = content['access_token']
-        SPOTIFY_TOKEN_EXPIRE = expire_date
+        SPOTIFY_STATE_DICT[auth_state]['access'] = content.get('access_token', None)
+        if 'refresh_token' in content:
+            SPOTIFY_STATE_DICT[auth_state]['refresh'] = content['refresh_token']
+        SPOTIFY_STATE_DICT[auth_state]['expire'] = expire_date
+        SPOTIFY_STATE_DICT[auth_state]['count'] += 1
 
         print('------')
         print('Good! Access token will expire in {duration}s, or roughly at {timestamp}'.format(
@@ -95,8 +123,3 @@ def spotify_request_access_token():
         print(content)
         print('------')
 
-if __name__ == '__main__':
-    state = get_new_auth_state()
-    print(state)
-    print(get_redir_url(state))
-#    spotify_request_auth_token()
