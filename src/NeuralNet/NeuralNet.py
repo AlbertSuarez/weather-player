@@ -1,4 +1,4 @@
-# from src import *
+from src import *
 import torch 
 import torch.nn as nn
 import torch.optim as optim
@@ -71,13 +71,13 @@ def generate_data_set_prova():
 
 #GENERATE NUMPY ARRAYS DEPENDING THE TIME CONDITIONS
 def generate_numpyarray(tiempo):
-    if(tiempo == WET):
+    if tiempo == WET:
         a = np.array([1.,0.,0.,0.,0.],dtype=float)
-    elif(tiempo == HOT):
+    elif tiempo == HOT:
        a=  np.array([0.,1.,0.,0.,0.],dtype=float)
-    elif(tiempo == FREEZE):
+    elif tiempo == FREEZE:
        a=  np.array([0.,0.,1.,0.,0.],dtype=float)
-    elif(tiempo == GLOOMY):
+    elif tiempo == GLOOMY:
         a= np.array([0.,0.,0.,1.,0.],dtype=float)
     else :
         a= np.array([0.,0.,0.,0.,1.],dtype=float)
@@ -130,35 +130,35 @@ def test(test_data):
 #DANCEABILITY from 0.0 to 1.0 (1.0 is really danceable)
 # def get_features(y):
 #     res = dict()
-#     if(y==WET):
+#     if y==WET:
 #         res["tempo"] = 
 #         res["instrumentalness"]=
 #         res["energy"]=
 #         res["danceability"]=
 #         res = json.dumps(res)
 #         return res
-#     elif(y==NICE):
+#     elif y==NICE:
 #         res["tempo"] = 
 #         res["instrumentalness"]=
 #         res["energy"]=
 #         res["danceability"]=
 #         res = json.dumps(res)
 #         return res
-#     elif(y==GLOOMY):
+#     elif y==GLOOMY:
 #         res["tempo"] = 
 #         res["instrumentalness"]=
 #         res["energy"]=
 #         res["danceability"]=
 #         res = json.dumps(res)
 #         return res
-#      elif(y==HOT):
+#      elif y==HOT:
 #         res["tempo"] = 
 #         res["instrumentalness"]=
 #         res["energy"]=
 #         res["danceability"]=
 #         res = json.dumps(res)
 #         return res
-#      elif(y==FREEZE):
+#      elif y==FREEZE:
 #         res["tempo"] = 
 #         res["instrumentalness"]=
 #         res["energy"]=
@@ -168,35 +168,35 @@ def test(test_data):
     
     
 # def get_features2(y):
-#     if(y==WET):
+#     if y==WET:
 #         tempo =sigmoid()
 #         instrumentalness= 
 #         danceability=
 #         energy =    
 #         a = np.array([tempo,instrumentalness,danceability,energy])
 #         return a
-#     elif(y==NICE):
+#     elif y==NICE:
 #         tempo =sigmoid()
 #         instrumentalness= 
 #         danceability=
 #         energy = 
 #         a = np.array([tempo,instrumentalness,danceability,energy])   
 #         return a
-#     elif(y==GLOOMY):
+#     elif y==GLOOMY:
 #         tempo =sigmoid()
 #         instrumentalness= 
 #         danceability=
 #         energy = 
 #         a = np.array([tempo,instrumentalness,danceability,energy])   
 #         return a
-#      elif(y==HOT):
+#      elif y==HOT:
 #         tempo =sigmoid()
 #         instrumentalness= 
 #         danceability=
 #         energy = 
 #         a = np.array([tempo,instrumentalness,danceability,energy])   
 #         return a
-#      elif(y==FREEZE):
+#      elif y==FREEZE:
 #         tempo =sigmoid()
 #         instrumentalness= 
 #         danceability=
