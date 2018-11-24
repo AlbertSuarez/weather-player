@@ -32,7 +32,7 @@ def playlist():
 
     # Create Spotify playlist and generate a URI
 
-    redirect('/player?weather={}&feeling={}&uri={}'.format(weather, feeling, ''))
+    return redirect('/player?weather={}&feeling={}&uri={}'.format(weather, feeling, 'spotify:user:alaamoucharrafie:playlist:1fsvlFBWGhk94e5K7Pw7NT'))
 
 
 @flask_app.route('/player')
@@ -45,12 +45,19 @@ def player():
         'user_id': splitted_uri[2],
         'playlist_id': splitted_uri[4]
     }
+    import json
+    print()
+    print(json.dumps(spotify.SPOTIFY_STATE_DICT, indent=2))
+    print()
     return render_template('player.html', params=params)
 
 
-@flask_app.route('/auth')
+@flask_app.route('/auth', methods=['POST'])
 def auth():
     auth_state = spotify.get_new_auth_state()
+    weather = request.form['weather']
+    feeling = request.form['feeling']
+    spotify.bind_state_info(auth_state, weather, feeling)
     redirect_url = spotify.get_redir_url(auth_state)
     response = redirect(redirect_url)
     response.headers = {'Access-Control-Allow-Origin': '*'}
@@ -61,5 +68,8 @@ def auth():
 def callback():
     auth_state = request.args.get('state')
     auth_code = request.args.get('code')
-    spotify.auth_bind_pair(auth_state, auth_code)
-    return 'Success!', 200
+    spotify.bind_auth_code(auth_state, auth_code)
+    return redirect('/playlist?weather={weather}&feeling={feeling}'.format(
+        weather=spotify.SPOTIFY_STATE_DICT[auth_state]['weather'],
+        feeling=spotify.SPOTIFY_STATE_DICT[auth_state]['feeling']
+    ))

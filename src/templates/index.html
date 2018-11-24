@@ -50,23 +50,28 @@
         <p>It is <b>{{ params.current_weather }}</b> outside...</p>
         <p>How are you feeling?</p>
 
-        <div class="container">
-          <div class="select-dropdown">
-            <button role="button" data-value="" class="select-dropdown__button">
-              <span>Select option</span> <i class="zmdi zmdi-chevron-down"></i>
-            </button>
-            <ul class="select-dropdown__list">
-              <li data-value="HAPPY" class="select-dropdown__list-item">Happy</li>
-              <li data-value="SAD" class="select-dropdown__list-item">Sad</li>
-              <li data-value="BORED" class="select-dropdown__list-item">Bored</li>
-              <li data-value="TIRED" class="select-dropdown__list-item">Tired</li>
-              <li data-value="ANGRY" class="select-dropdown__list-item">Angry</li>
-            </ul>
-          </div>
-        </div>
+        <form id="form_submit" action="/auth" method="POST">
+          <input type="hidden" name="weather" id="input_weather" value="{{ params.current_weather }}" />
+          <input type="hidden" name="feeling" id="input_feeling" value="" />
 
-        <a id="play" class="button special">Play</a>
-         <a id="load" class="loader" ></a>
+          <div class="container">
+            <div class="select-dropdown">
+              <button type="button" role="button" data-value="" class="select-dropdown__button">
+                <span>Select option</span> <i class="zmdi zmdi-chevron-down"></i>
+              </button>
+              <ul class="select-dropdown__list">
+                <li data-value="HAPPY" class="select-dropdown__list-item">Happy</li>
+                <li data-value="SAD" class="select-dropdown__list-item">Sad</li>
+                <li data-value="BORED" class="select-dropdown__list-item">Bored</li>
+                <li data-value="TIRED" class="select-dropdown__list-item">Tired</li>
+                <li data-value="ANGRY" class="select-dropdown__list-item">Angry</li>
+              </ul>
+            </div>
+          </div>
+
+          <a id="play" class="button special">Play</a>
+          <a id="load" class="loader" ></a>
+        </form>
 
       </div>
 

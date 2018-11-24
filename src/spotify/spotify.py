@@ -61,20 +61,28 @@ def get_redir_url(auth_state):
     )
     return SPOTIFY_ACC_BASE_URL.format('/authorize?{params}'.format(params=params))
 
-def get_new_auth_state(
-        size=8,
-        charset=string.ascii_uppercase+string.ascii_lowercase+string.digits):
-    return ''.join(random.choice(charset) for _ in range(size))
+def get_new_auth_state():
+    charset = string.ascii_uppercase + string.ascii_lowercase + string.digits
+    state = None
+    while True:
+        state = ''.join(random.choice(charset) for _ in range(16))
+        if state not in SPOTIFY_STATE_DICT:
+            break
+    SPOTIFY_STATE_DICT[state] = {}
+    return state
 
+def bind_auth_code(auth_state, auth_code):
+    SPOTIFY_STATE_DICT[auth_state].update({
+        'count': 0,
+        'access': auth_code,
+        'refresh': None,
+        'expire': None
+    })
 
-def auth_bind_pair(auth_state, auth_code):
-    SPOTIFY_STATE_DICT.update({
-        auth_state: {
-            'count': 0,
-            'access': auth_code,
-            'refresh': None,
-            'expire': None
-        }
+def bind_state_info(auth_state, weather, feeling):
+    SPOTIFY_STATE_DICT[auth_state].update({
+        'weather': weather,
+        'feeling': feeling
     })
 
 def request_access_token(auth_state):
@@ -170,6 +178,6 @@ def mid(url):
     return url['state'], url['code']
 
 def post(state, code):
-    auth_bind_pair(state, code)
+    bind_auth_code(state, code)
     request_access_token(state)
 
