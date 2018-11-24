@@ -7,11 +7,11 @@ import string
 import urllib.parse
 
 SPOTIFY_API_BASE_URL = 'https://accounts.spotify.com{}'
-SPOTIFY_SRV_BASE_URL = 'https://localhost:8081{}'
+SPOTIFY_SRV_BASE_URL = 'http://localhost:8081{}'
 SPOTIFY_REDIRECT_URI = SPOTIFY_SRV_BASE_URL.format('/callback')
 SPOTIFY_AUTH_SCOPES = ['playlist-modify-public', 'user-top-read']
-SPOTIFY_CLIENT_ID = '1a47f705dfca49b09c7ea6fec6070b8d'
-SPOTIFY_CLIENT_SECRET = '8546bb88f48541f585f208c3b86c6f33'
+SPOTIFY_CLIENT_ID = 'ca9e01ed39da4b3ab0ef6e69a9d9fd0a'
+SPOTIFY_CLIENT_SECRET = 'b67a0a50eca84387838c31fec4c2494b'
 SPOTIFY_STATE_DICT = {}
 
 def __str2bytes(str):
