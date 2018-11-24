@@ -10,8 +10,8 @@ import json
 import math
 
 my_input_de_prueba = [WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY, WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,NICE, GLOOMY,NICE, GLOOMY,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY,NICE,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY, GLOOMY,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY]
-
-
+my_input_de_test = [ GLOOMY, NICE, FREEZE,HOT, WET,FREEZE,HOT,NICE, GLOOMY, HOT,NICE, GLOOMY,NICE, GLOOMY,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY,NICE,WET, GLOOMY, NICE, FREEZE,HOT,NICE, GLOOMY,  GLOOMY, NICE, FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, FREEZE,HOT,WET, GLOOMY, NICE, FREEZE,HOT,NICE, GLOOMY,  GLOOMY, NICE, FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY, GLOOMY,WET, GLOOMY, NICE, FREEZE,HOT,NICE, GLOOMY,  GLOOMY, NICE, FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, FREEZE,HOT,WET, GLOOMY, NICE, FREEZE,HOT,NICE, GLOOMY]
+#MODEL
 class LinearRegression(nn.Module):
     def __init__(self,n_in,n_out):
         super(LinearRegression, self).__init__()
@@ -22,7 +22,7 @@ class LinearRegression(nn.Module):
         return out
 
 #ESTE DATASET EN TEORÍA TENDRÍA SENTIDO
-def generate_train_data():
+def generate_data():
     my_x = []
     my_y = []
 
@@ -33,11 +33,12 @@ def generate_train_data():
     return my_x, my_y    
 
 
+#SQUASHING FUNCTION
 def sigmoid(x):
   return 1 / (1 + math.exp(-x))
 
-#DATASET DE PRUEBA DE ARRAYS RANDOMS DE 0 y 1
 
+#DATASET DE PRUEBA DE ARRAYS RANDOMS DE 0 y 1
 def generate_data_set_prova():
     my_x = []
     my_y = []
@@ -53,6 +54,8 @@ def generate_data_set_prova():
  
     return my_x,my_y
 
+
+#GENERATE NUMPY ARRAYS DEPENDING THE TIME CONDITIONS
 def generate_numpyarray(tiempo):
     if(tiempo == WET):
         a = np.array([1.,0.,0.,0.,0.])
@@ -67,21 +70,16 @@ def generate_numpyarray(tiempo):
     
 
 
-# def train(path_to_store_weight_file, number_of_iterations=1):
 def train(number_of_iterations=1):
-    #mirar cuando este mas despierto
     n_in, n_out = 5,4
-
-    #tengo 14 outputs son 7 features y rango
     model = LinearRegression(n_in,n_out) 
+
+
     #Lost and Optimizer
-    #me dicen que tengo que usar la cross entropy
     criterion = nn.MSELoss()
     optimizer = optim.SGD(model.parameters(),lr=0.01)
 
-
-    #vamos a pillar lo que he generado en el generate
-    inputs, outputs = generate_data_set_prova()
+    inputs, outputs = generate_data()
 
     for t in range(number_of_iterations):
         #convert numpy array to tensor 
@@ -90,18 +88,14 @@ def train(number_of_iterations=1):
         y_pred = model(inputs)
         targets = targets.view(1,4)
         loss_fn = criterion(y_pred,targets)
+
         #letsdosome gradient
         optimizer.zero_grad()
         loss_fn.backward()
         optimizer.step()
+
         #devolver el error 
         print('Iteration '+str(t)+': ',loss_fn.item())
-        # if((t+1) %5 == 0) :
-        #     predicted = model(Variable(torch.as_tensor(inputs).float()).data.numpy()
-        #     plt.plot(x_train,y_train,label='Original Data')
-        #     plt.plot(x_train,predicted,label='Fitted Line')
-        #     plt.legend()
-        #     plt.show()
 
     print('DONE')
     model.save_state_dict('./model.pt')
@@ -111,10 +105,10 @@ def train(number_of_iterations=1):
 def test(test_data):
     model.load_state_dict(torch.load('./model.pt'))
     y_pred = model(test_data)
-    return y_pred.data
+    return y_pred.data.detach()
 
 #los sentimientos pueden ser 5 = SAD,HAPPY,ANGRY,BORED,TIRED
-#las posibilidades de weather pueden ser 5 WET GLOOMY (fog) FREEZE HOT NICE 
+#las posibilidades de weather pueden ser 5 WET GLOOMY FREEZE HOT NICE 
 
 
 #tempo -> float bpm
@@ -209,6 +203,13 @@ nice='spotify:track:0tZkVZ9DeAa0MNK2gY5NtV'
 
 if __name__ == "__main__":
     train(1000)
+    inputs = []
+    for i in range(len(my_input_de_test)):
+            inputs.append(generate_numpyarray(my_input_de_test[i]))
+    output = test(inputs)
+    print(output)
+
+    
     # if sys.argv[1] == "train":
     #     #path donde guardar los pesos y numero de iteraciones 
     #     train(sys.argv[2], int(sys.argv[3]))
