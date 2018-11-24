@@ -1,8 +1,9 @@
 from flask import Flask, render_template, redirect, request
-
 from src.vaisala.api import get_current_weather
 from src.spotify import spotify
+from src.neural_net import neural_net
 
+from src import *
 
 flask_app = Flask(__name__, template_folder='templates/')
 flask_app.config['JSON_AS_ASCII'] = False
@@ -23,8 +24,11 @@ def playlist():
     feeling = request.args.get('feeling')
 
     # Process with NN
-
+    res = neural_net.execute([weather])
+    #keys:tempo, instrumentalness,danceability,energy
+    
     # Process with Spotify
+
 
     # Create Spotify playlist and generate a URI
 

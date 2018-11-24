@@ -1,4 +1,4 @@
-from src import *
+
 import torch 
 import torch.nn as nn
 import random
@@ -10,9 +10,26 @@ import sys
 import json
 import math
 
+# from src import *
+
+plot = dict()
+    
+WET = "wet"
+GLOOMY = "gloomy"
+FREEZE = "freezing"
+HOT = "hot"
+NICE = "nice"
+
+HAPPY = "happy"
+BORED = "bored"
+SAD = "sad"
+TIRED ="tired"
+ANGRY = "angry"
+
+
 #TESTING INPUT OF TRAINING AND TESTING
 my_input_de_prueba = [WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY, WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,NICE, GLOOMY,NICE, GLOOMY,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY,NICE,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY, GLOOMY,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY]
-my_input_de_test = [GLOOMY, NICE, FREEZE,HOT, WET]
+my_input_de_test = [GLOOMY]
 
 #MODEL
 class LinearRegression(nn.Module):
@@ -109,14 +126,31 @@ def train(number_of_iterations=1):
     print('Guardado')
 
 
+
+#testing part
+def test():
+    model = LinearRegression(5,4) #check this stuff
+    model.load_state_dict(torch.load('src/neural_net/model.pt'))
+    inputs = generate_data_execute(my_input_de_test)
+    inputs = Variable(torch.as_tensor(inputs).float())
+    y_pred = model(inputs)
+    return y_pred
+
+
 #execute function that it is going to be called from player.py
 def execute(valores):
-    model = LinearRegression(5,4) 
+    diccionari =dict()
+    model = LinearRegression(5,4) #check this stuff
     model.load_state_dict(torch.load('./model.pt'))
     inputs = generate_data_execute(valores)
     inputs = Variable(torch.as_tensor(inputs).float())
     y_pred = model(inputs)
-    return y_pred
+    y = y_pred.detach().numpy().tolist()
+    diccionari["tempo"]= y[0][0]
+    diccionari["instrumentalness"]= y[0][1]
+    diccionari["danceability"]=y[0][2]
+    diccionari["energy"]=y[0][3]
+    return diccionari
 
 
 #get features in a json object
@@ -212,8 +246,7 @@ def get_features2(y,i):
 
 #this functions gives us plots about each genre and features we are analysing
 def plots(a):
-    plot = dict()
-    
+
     #GLOOMY PLOT
     performance = [a[0][1],a[0][2],a[0][3]]
     objects =('Instrumentalness','Energy','Danceability')
@@ -224,7 +257,7 @@ def plots(a):
     plt.show()
 
     #NICE PLOT
-    performance = [c, a[1][1],a[1][2],a[1][3]]
+    performance = [a[1][1],a[1][2],a[1][3]]
     objects =('Instrumentalness','Energy','Danceability')
     plt.bar(np.arange(len(objects)), performance, align='center', alpha=0.5)
     plt.xticks(np.arange(len(objects)), objects)
@@ -271,7 +304,9 @@ nice='spotify:track:0tZkVZ9DeAa0MNK2gY5NtV'
 
 if __name__ == "__main__":
     train(3000)
-    a = test()
+    # si vull fer-ho hauré de fer un test abans plots(result)
+    execute(["wet"])
+    
    
 
  
