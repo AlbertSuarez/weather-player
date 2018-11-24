@@ -5,3 +5,6 @@ uwsgitop
 influxdb
 urllib3
 requests
+torch
+matplotlib
+numpy
