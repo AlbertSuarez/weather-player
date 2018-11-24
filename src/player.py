@@ -19,6 +19,9 @@ def index():
     return render_template('index.html', params=params)
 
 
-@flask_app.route('/playlist')
-def playlist():
-    return 'This is a playlist!', 200
+@flask_app.route('/player/<weather>')
+def player(weather):
+    params = {
+        'current_weather': weather
+    }
+    return render_template('player.html', params=params)
