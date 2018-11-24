@@ -12,7 +12,7 @@ from src import *
 if DEVELOPMENT_MODE:
     SPOTIFY_SRV_BASE_URL = 'http://localhost:8081{}'
 else:
-    SPOTIFY_SRV_BASE_URL = 'http://weather-player.com{}'
+    SPOTIFY_SRV_BASE_URL = 'https://weather-player.com{}'
 
 
 SPOTIFY_DEBUG = True
