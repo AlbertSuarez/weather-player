@@ -10,10 +10,7 @@ import sys
 import json
 import math
 
-
-
-
-
+#TESTING INPUT OF TRAINING AND TESTING
 my_input_de_prueba = [WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY, WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,NICE, GLOOMY,NICE, GLOOMY,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY,NICE,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY, GLOOMY,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY]
 my_input_de_test = [GLOOMY, NICE, FREEZE,HOT, WET]
 
@@ -24,10 +21,10 @@ class LinearRegression(nn.Module):
         self.linear = nn.Linear(n_in,n_out)
 
     def forward(self,x):
-        out = self.linear(x) #Forward propagation 
+        out = self.linear(x) 
         return out
 
-#ESTE DATASET EN TEORÍA TENDRÍA SENTIDO
+#GENERATE THE DATA INPUT AND OUTPUT FOR THE TRAINING
 def generate_data():
     my_x = []
     my_y = []
@@ -37,12 +34,12 @@ def generate_data():
         my_y.append(get_features2(my_input_de_prueba[i],random.randint(0, 1)))
     return my_x, my_y    
 
-def generate_data_tests():
+#GENERATING THE DATA INPUT FOR THE EXECUTION
+def generate_data_execute(valores):
     my_x= []
-    for i in range(len(my_input_de_test)):
-        my_x.append(generate_numpyarray(my_input_de_test[i]))
+    for i in range(len(valores)):
+        my_x.append(generate_numpyarray(valores[i]))
     return my_x
-
 
 
 #SQUASHING FUNCTION
@@ -50,7 +47,7 @@ def sigmoid(x):
   return 1 / (1 + math.exp(-x))
 
 
-#DATASET DE PRUEBA DE ARRAYS RANDOMS DE 0 y 1
+#RANDOM NONSENSE DATASET FOR TESTING STUFF
 def generate_data_set_prova():
     my_x = []
     my_y = []
@@ -81,7 +78,7 @@ def generate_numpyarray(tiempo):
         a= np.array([0.,0.,0.,0.,1.],dtype=float)
     return a
 
-
+#training
 def train(number_of_iterations=1):
     n_in, n_out = 5,4
     model = LinearRegression(n_in,n_out) 
@@ -100,12 +97,11 @@ def train(number_of_iterations=1):
         targets = targets.view(len(inputs),4)
         loss_fn = criterion(y_pred,targets)
 
-        #letsdosome gradient
+        #lets do some gradient
         optimizer.zero_grad()
         loss_fn.backward()
         optimizer.step()
         plot[t] = loss_fn.item()
-        #devolver el error 
         print('Iteration '+str(t)+': ',loss_fn.item())
 
     print('DONE')
@@ -113,16 +109,17 @@ def train(number_of_iterations=1):
     print('Guardado')
 
 
-
-def test():
+#execute function that it is going to be called from player.py
+def execute(valores):
     model = LinearRegression(5,4) 
     model.load_state_dict(torch.load('./model.pt'))
-    inputs = generate_data_tests()
+    inputs = generate_data_execute(valores)
     inputs = Variable(torch.as_tensor(inputs).float())
     y_pred = model(inputs)
-    print(y_pred.data)
     return y_pred
 
+
+#get features in a json object
 def get_features(y):
     res = dict()
     if y==WET:
@@ -162,6 +159,7 @@ def get_features(y):
         return res
             
     
+#get features in a numpy array 
 def get_features2(y,i):
     if y==WET:
         if(i==0):
@@ -212,11 +210,8 @@ def get_features2(y,i):
         return a
 
 
+#this functions gives us plots about each genre and features we are analysing
 def plots(a):
-    # plt.bar(range(len(plot)), list(plot.values()), align='center')
-    # plt.xticks(range(len(plot)), list(plot.keys()))
-    # plt.show()
-
     plot = dict()
     
     #GLOOMY PLOT
@@ -264,10 +259,6 @@ def plots(a):
     plt.title('Hot')
     plt.show()
 
-
-
-
-
 #SPOTIFY URI WHERE WE PICK THE VALUES 
 
 wet= 'spotify:track:0mPVXHJ4Aibai5VA0F4Lwa'
@@ -281,17 +272,6 @@ nice='spotify:track:0tZkVZ9DeAa0MNK2gY5NtV'
 if __name__ == "__main__":
     train(3000)
     a = test()
-    plots(a.detach().numpy())
+   
 
-
-
-    # if sys.argv[1] == "train":
-    #     #path donde guardar los pesos y numero de iteraciones 
-    #     train(sys.argv[2])
-    # if sys.argv[1] == "test":
-    #     test(test_data)
-
-#tensor([[0.4749, 0.1475, 0.4253, 0.4014],
-        # [1.0499, 0.0119, 0.5513, 0.5331],
-        # [0.9689, 0.3906, 0.2744, 0.2109],
-        # [0.8143, 0.3371, 0.9320, 0.2388]])
+ 
