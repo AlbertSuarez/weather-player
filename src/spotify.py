@@ -30,6 +30,27 @@ def do_request(url, method='get', params=None, headers=None):
     print('------')
     return (request.status_code, request.content)
 
+def spotify_request_auth_token():
+    status_code, content = do_request(
+        SPOTIFY_BASE_URL.format('/authorize'),
+        params={
+            'client_id': SPOTIFY_CLIENT_ID,
+            'response_type': 'code',
+            'redirect_uri': 'https://localhost',
+            'scope': 'playlist-modify-public user-top-read'
+        }
+    )
+    if status_code == 200:
+        print('------')
+        print(content)
+        print('------')
+    else:
+        print('------')
+        print('ERROR: status code {}'.format(status_code))
+        print(content)
+        print('------')
+
+
 def spotify_request_access_token():
     status_code, content = do_request(
         SPOTIFY_BASE_URL.format('/api/token'),
@@ -70,4 +91,4 @@ def spotify_request_access_token():
         print('------')
 
 if __name__ == '__main__':
-    spotify_request_access_token()
+    spotify_request_auth_token()
