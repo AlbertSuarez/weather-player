@@ -42,6 +42,6 @@ def auth():
 
 @flask_app.route('/callback')
 def callback():
-    auth_code = request.args.get('code')
     auth_state = request.args.get('state')
-    spotify.auth_bind_pair(auth_code, auth_state)
+    auth_code = request.args.get('code')
+    spotify.auth_bind_pair(auth_state, auth_code)
