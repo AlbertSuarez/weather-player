@@ -48,7 +48,25 @@
       <div class="inner">
         <h2>Weather Player</h2>
         <p>It is <b>{{ params.current_weather }}</b> outside...</p>
+        <p>How are you feeling?</p>
+
+        <div class="container">
+          <div class="select-dropdown">
+            <button role="button" data-value="" class="select-dropdown__button">
+              <span>Select option</span> <i class="zmdi zmdi-chevron-down"></i>
+            </button>
+            <ul class="select-dropdown__list">
+              <li data-value="HAPPY" class="select-dropdown__list-item">Happy</li>
+              <li data-value="SAD" class="select-dropdown__list-item">Sad</li>
+              <li data-value="BORED" class="select-dropdown__list-item">Bored</li>
+              <li data-value="TIRED" class="select-dropdown__list-item">Tired</li>
+              <li data-value="ANGRY" class="select-dropdown__list-item">Angry</li>
+            </ul>
+          </div>
+        </div>
+
         <a href="/" class="button special">Play</a>
+
       </div>
 
     </section>
