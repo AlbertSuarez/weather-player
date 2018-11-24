@@ -7,7 +7,7 @@ import string
 import urllib.parse
 
 SPOTIFY_API_BASE_URL = 'https://accounts.spotify.com{}'
-SPOTIFY_SRV_BASE_URL = 'https://localhost{}'
+SPOTIFY_SRV_BASE_URL = 'https://localhost:8081{}'
 SPOTIFY_REDIRECT_URI = SPOTIFY_SRV_BASE_URL.format('/callback')
 SPOTIFY_AUTH_SCOPES = ['playlist-modify-public', 'user-top-read']
 SPOTIFY_CLIENT_ID = '1a47f705dfca49b09c7ea6fec6070b8d'

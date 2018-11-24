@@ -44,3 +44,4 @@ def callback():
     auth_state = request.args.get('state')
     auth_code = request.args.get('code')
     spotify.auth_bind_pair(auth_state, auth_code)
+    return 'Success!', 200

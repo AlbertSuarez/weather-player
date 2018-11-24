@@ -51,13 +51,7 @@
         if (itemValue == null) {
             window.alert("C'mon, don't be shy! How are you feeling?");
         } else {
-            $.ajax({
-                url: "http://localhost:8081/auth",
-                type: "GET",
-                success: function() {
-                    alert('Success!' + authHeader);
-                }
-            });
+            window.open("/auth", "Spotify Login", "width=500,height=500");
         }
     })
 
