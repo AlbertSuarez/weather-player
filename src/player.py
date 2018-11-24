@@ -11,7 +11,12 @@ flask_app.config['JSON_AS_ASCII'] = False
 
 @flask_app.route('/')
 def index():
-    current_weather = get_current_weather()
+    query_weather = request.args.get('weather')
+    if query_weather and query_weather in [WET, HOT, FREEZE, GLOOMY, NICE]:
+        current_weather = query_weather
+    else:
+        current_weather = get_current_weather()
+
     params = {
         'current_weather': current_weather
     }
