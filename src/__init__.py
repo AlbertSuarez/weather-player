@@ -1,4 +1,5 @@
 __all__ = [
+    "DEVELOPMENT_MODE",
     "WET",
     "GLOOMY",
     "FREEZE",
@@ -9,6 +10,8 @@ __all__ = [
     "F60",
     "TEMP"
 ]
+
+DEVELOPMENT_MODE = True
 
 WET = "wet"
 GLOOMY = "gloomy"

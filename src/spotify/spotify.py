@@ -6,10 +6,18 @@ import requests
 import string
 import urllib.parse
 
+from src import *
+
+
+if DEVELOPMENT_MODE:
+    SPOTIFY_SRV_BASE_URL = 'http://localhost:8081{}'
+else:
+    SPOTIFY_SRV_BASE_URL = 'http://weather-player.com{}'
+
+
 SPOTIFY_DEBUG = True
 SPOTIFY_ACC_BASE_URL = 'https://accounts.spotify.com{}'
 SPOTIFY_API_BASE_URL = 'https://api.spotify.com/v1{}'
-SPOTIFY_SRV_BASE_URL = 'http://localhost:8081{}'
 SPOTIFY_REDIRECT_URI = SPOTIFY_SRV_BASE_URL.format('/callback')
 SPOTIFY_AUTH_SCOPES = ['playlist-modify-public', 'user-top-read']
 SPOTIFY_CLIENT_ID = 'ca9e01ed39da4b3ab0ef6e69a9d9fd0a'
@@ -156,7 +164,7 @@ def pre():
     return state, get_redir_url(state)
 
 def mid(url):
-    url = url.replace('http://localhost:8081/callback?', '')
+    url = url.replace('{}/callback?'.format(SPOTIFY_SRV_BASE_URL), '')
     url = url.split('&')
     url = {token.split('=')[0]: token.split('=')[1] for token in url}
     return url['state'], url['code']
