@@ -10,23 +10,10 @@ import sys
 import json
 import math
 
-# from src import *
+from src import *
 
 plot = dict()
     
-WET = "wet"
-GLOOMY = "gloomy"
-FREEZE = "freezing"
-HOT = "hot"
-NICE = "nice"
-
-HAPPY = "happy"
-BORED = "bored"
-SAD = "sad"
-TIRED ="tired"
-ANGRY = "angry"
-
-
 #TESTING INPUT OF TRAINING AND TESTING
 my_input_de_prueba = [WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY, WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,NICE, GLOOMY,NICE, GLOOMY,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY,NICE,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY, GLOOMY,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY]
 my_input_de_test = [GLOOMY]
@@ -130,7 +117,7 @@ def train(number_of_iterations=1):
 #testing part
 def test():
     model = LinearRegression(5,4) #check this stuff
-    model.load_state_dict(torch.load('src/neural_net/model.pt'))
+    model.load_state_dict(torch.load('./model.pt'))
     inputs = generate_data_execute(my_input_de_test)
     inputs = Variable(torch.as_tensor(inputs).float())
     y_pred = model(inputs)
@@ -141,7 +128,7 @@ def test():
 def execute(valores):
     diccionari =dict()
     model = LinearRegression(5,4) #check this stuff
-    model.load_state_dict(torch.load('./model.pt'))
+    model.load_state_dict(torch.load('src/neural_net/model.pt'))
     inputs = generate_data_execute(valores)
     inputs = Variable(torch.as_tensor(inputs).float())
     y_pred = model(inputs)
