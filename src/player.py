@@ -17,6 +17,20 @@ def index():
     return render_template('index.html', params=params)
 
 
+@flask_app.route('/playlist')
+def playlist():
+    weather = request.args.get('weather')
+    feeling = request.args.get('feeling')
+
+    # Process with NN
+
+    # Process with Spotify
+
+    # Create Spotify playlist and generate a URI
+
+    redirect('/player?weather={}&feeling={}&uri={}'.format(weather, feeling, ''))
+
+
 @flask_app.route('/player')
 def player():
     weather = request.args.get('weather')
