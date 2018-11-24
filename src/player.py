@@ -22,8 +22,11 @@ def index():
 def player():
     weather = request.args.get('weather')
     uri = request.args.get('uri')
+    splitted_uri = uri.split(':')
     params = {
-        'current_weather': weather
+        'current_weather': weather,
+        'user_id': splitted_uri[2],
+        'playlist_id': splitted_uri[4]
     }
     return render_template('player.html', params=params)
 
@@ -39,6 +42,6 @@ def auth():
 
 @flask_app.route('/callback')
 def callback():
-    auth_code = request.args.get('code')
     auth_state = request.args.get('state')
-    spotify.auth_bind_pair(auth_code, auth_state)
+    auth_code = request.args.get('code')
+    spotify.auth_bind_pair(auth_state, auth_code)
