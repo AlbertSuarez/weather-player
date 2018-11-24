@@ -19,6 +19,7 @@
         $window.on('load', function() {
             window.setTimeout(function() {
                 $body.removeClass('is-loading');
+                $('iframe').addClass('change-shit');
             }, 100);
         });
 
