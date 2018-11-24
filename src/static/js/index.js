@@ -53,21 +53,6 @@
             window.alert("C'mon, don't be shy! How are you feeling?");
         } else {
             $('#form_submit').submit();
-/*            var newWin = window.open("/auth", "Spotify Login", "width=500,height=500");
-            $(newWin).unload(function(){
-                alert(newWin.location.href);
-                alert(newWin.location.href.includes('/callback'));
-                if (newWin.location.href.includes('/callback')){
-                    var myPlay = document.getElementById('play');
-                    var myLoader = document.getElementById('load');
-                    myPlay.style.display = 'none';
-                    myLoader.style.display = 'block';
-                    var newUrl = '/playlist?weather=' + $('#weather').text() + '&feeling=' + itemValue;
-                    newWin.opener.location = newUrl;
-                    newWin.close();
-                    console.log("I closed :)");
-                }
-            });*/
         }
     })
 

@@ -468,22 +468,3 @@ body.landing #page-wrapper {
     color: #616161;
     transition: all ease-in-out 0.3s;
 }
-
-.loader {
-    display: none;
-    border: 16px solid #f3f3f3; /* Light grey */
-    border-top: 16px solid #ed4933; /* Blue */
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
