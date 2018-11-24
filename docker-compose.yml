@@ -27,5 +27,3 @@ services:
 
 networks:
   weather-player:
-    external:
-      name: weather-player
