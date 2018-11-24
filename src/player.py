@@ -20,9 +20,14 @@ def index():
     return render_template('index.html', params=params)
 
 
-@flask_app.route('/playlist')
-def playlist():
-    return 'This is a playlist!', 200
+@flask_app.route('/player')
+def player():
+    weather = request.args.get('weather')
+    uri = request.args.get('uri')
+    params = {
+        'current_weather': weather
+    }
+    return render_template('player.html', params=params)
 
 
 @flask_app.route('/auth')

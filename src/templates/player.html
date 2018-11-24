@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Weather Player</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+
+    <link rel='stylesheet' href="{{ url_for('static', filename='styles/master.css') }}">
+</head>
+
+<body class="landing">
+<div id="page-wrapper">
+    <section id="banner">
+
+        {% if params.current_weather == "wet" %}
+        <video loop muted autoplay poster="{{ url_for('static', filename='images/wet.png') }}"
+               class="fullscreen-bg__video">
+            <source src="{{ url_for('static', filename='videos/wet.webm') }}" type="video/webm">
+            <source src="{{ url_for('static', filename='videos/wet.mp4') }}" type="video/mp4">
+        </video>
+        {% elif params.current_weather == "gloomy" %}
+        <video loop muted autoplay poster="{{ url_for('static', filename='images/gloomy.png') }}"
+               class="fullscreen-bg__video">
+            <source src="{{ url_for('static', filename='videos/gloomy.webm') }}" type="video/webm">
+            <source src="{{ url_for('static', filename='videos/gloomy.mp4') }}" type="video/mp4">
+        </video>
+        {% elif params.current_weather == "freezing" %}
+        <video loop muted autoplay poster="{{ url_for('static', filename='images/freezing.png') }}"
+               class="fullscreen-bg__video">
+            <source src="{{ url_for('static', filename='videos/freezing.webm') }}" type="video/webm">
+            <source src="{{ url_for('static', filename='videos/freezing.mp4') }}" type="video/mp4">
+        </video>
+        {% elif params.current_weather == "hot" %}
+        <video loop muted autoplay poster="{{ url_for('static', filename='images/hot.png') }}"
+               class="fullscreen-bg__video">
+            <source src="{{ url_for('static', filename='videos/hot.webm') }}" type="video/webm">
+            <source src="{{ url_for('static', filename='videos/hot.mp4') }}" type="video/mp4">
+        </video>
+        {% elif params.current_weather == "nice" %}
+        <video loop muted autoplay poster="{{ url_for('static', filename='images/nice.png') }}"
+               class="fullscreen-bg__video">
+            <source src="{{ url_for('static', filename='videos/nice.webm') }}" type="video/webm">
+            <source src="{{ url_for('static', filename='videos/nice.mp4') }}" type="video/mp4">
+        </video>
+        {% else %}
+        <video loop muted autoplay poster="{{ url_for('static', filename='images/404.png') }}"
+               class="fullscreen-bg__video"></video>
+        {% endif %}
+        <div class="inner" class="spotify">
+            <iframe
+                    src="https://open.spotify.com/embed/user/faixelorihinal/playlist/788Ov4sFzjgzgUsnD0G31P" width="300"
+                    height="380" frameborder="0" allowtransparency="true" allow="encrypted-media">
+            </iframe>
+        </div>
+
+    </section>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+</body>
+</html>
