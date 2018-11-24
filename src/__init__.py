@@ -16,6 +16,13 @@ FREEZE = "freezing"
 HOT = "hot"
 NICE = "nice"
 
+HAPPY = "happy"
+BORED = "bored"
+SAD = "sad"
+TIRED ="tired"
+ANGRY = "angry"
+
+
 INSTANT = "W1"
 F15 = "W2"
 F60 = "W3"
