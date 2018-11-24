@@ -86,7 +86,9 @@ def parse_code(code, temp):
     if code in CHECK_TEMP:
         if temp > 28:
             return HOT
-        elif temp < 5:
+        elif temp < 10 and temp >=2:
+            return GLOOMY
+        elif temp < 2:
             return FREEZE
         else:
             return NICE
