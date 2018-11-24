@@ -1,8 +1,7 @@
 from flask import Flask, render_template, redirect, request
-from flask_cors import CORS, cross_origin
 
 from src.vaisala.api import get_current_weather
-from src import spotify
+from src.spotify import spotify
 
 
 flask_app = Flask(__name__, template_folder='templates/')
