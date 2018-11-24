@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from src.vaisala.api import get_current_weather
 from src import spotify
@@ -7,8 +7,6 @@ from src import spotify
 
 flask_app = Flask(__name__, template_folder='templates/')
 flask_app.config['JSON_AS_ASCII'] = False
-
-CORS(flask_app)
 
 
 @flask_app.route('/')
@@ -34,7 +32,9 @@ def player():
 def auth():
     auth_state = spotify.get_new_auth_state()
     redirect_url = spotify.get_redir_url(auth_state)
-    return redirect(redirect_url)
+    response = redirect(redirect_url)
+    response.headers = {'Access-Control-Allow-Origin': '*'}
+    return response
 
 
 @flask_app.route('/callback')
