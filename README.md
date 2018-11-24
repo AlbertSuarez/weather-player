@@ -48,7 +48,13 @@ pip3 install -r requirements.txt
 python3 -m src
 ```
 
-**4**. Open your browser to here:
+**4**. Install `python3-tk`
+
+```bash
+sudo apt-get install python3-tk
+```
+
+**5**. Open your browser to here:
 
 ```bash
 http://localhost:8081/
