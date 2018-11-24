@@ -3,3 +3,4 @@ Flask-Cors
 uWSGI
 uwsgitop
 influxdb
+urllib3
