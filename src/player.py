@@ -1,7 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request
 from flask_cors import CORS
 
 from src.vaisala.api import get_current_weather
+from src import spotify
 
 
 flask_app = Flask(__name__, template_folder='templates/')
@@ -22,3 +23,17 @@ def index():
 @flask_app.route('/playlist')
 def playlist():
     return 'This is a playlist!', 200
+
+
+@flask_app.route('/auth')
+def auth():
+    auth_state = spotify.get_new_auth_state()
+    redirect_url = spotify.get_redir_url(auth_state)
+    return redirect(redirect_url)
+
+
+@flask_app.route('/callback')
+def callback():
+    auth_code = request.args.get('code')
+    auth_state = request.args.get('state')
+    spotify.auth_bind_pair(auth_code, auth_state)

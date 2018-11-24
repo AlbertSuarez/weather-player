@@ -39,12 +39,27 @@
 	    $('.select-dropdown__list').toggleClass('active');
     });
 
+    var itemValue = null
     $('.select-dropdown__list-item').on('click', function(){
-	    var itemValue = $(this).data('value');
+	    itemValue = $(this).data('value');
 	    console.log(itemValue);
 	    $('.select-dropdown__button span').text($(this).text()).parent().attr('data-value', itemValue);
 	    $('.select-dropdown__list').toggleClass('active');
     });
+
+    $('#play').on('click', function(){
+        if (itemValue == null) {
+            window.alert("C'mon, don't be shy! How are you feeling?");
+        } else {
+            $.ajax({
+                url: "http://localhost:8081/auth",
+                type: "GET",
+                success: function() {
+                    alert('Success!' + authHeader);
+                }
+            });
+        }
+    })
 
 
 })(jQuery);
