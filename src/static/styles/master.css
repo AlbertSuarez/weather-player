@@ -11,6 +11,11 @@ html, body, div, span, applet, object, h1, h2, h3, h4, h5, h6, p, blockquote, pr
 	vertical-align: baseline;
 }
 
+.is-mobile p{
+	font-size: 9pt;
+	
+}
+
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
 	display: block;
 }
