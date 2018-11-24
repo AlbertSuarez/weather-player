@@ -1,4 +1,4 @@
-from src import *
+# from src import *
 import torch 
 import torch.nn as nn
 import torch.optim as optim
@@ -24,7 +24,7 @@ ANGRY = "angry"
 
 
 my_input_de_prueba = [WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY, WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,NICE, GLOOMY,NICE, GLOOMY,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY,NICE,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY, GLOOMY,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY]
-my_input_de_test = [GLOOMY, NICE, FREEZE,HOT, WET,FREEZE,HOT,NICE, GLOOMY, HOT,NICE, GLOOMY,NICE, GLOOMY,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY,NICE,WET, GLOOMY, NICE, FREEZE,HOT,NICE, GLOOMY,  GLOOMY, NICE, FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, FREEZE,HOT,WET, GLOOMY, NICE, FREEZE,HOT,NICE, GLOOMY,  GLOOMY, NICE, FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY, GLOOMY,WET, GLOOMY, NICE, FREEZE,HOT,NICE, GLOOMY,  GLOOMY, NICE, FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, FREEZE,HOT,WET, GLOOMY, NICE, FREEZE,HOT,NICE, GLOOMY]
+my_input_de_test = [GLOOMY, NICE, FREEZE,HOT]
 
 #MODEL
 class LinearRegression(nn.Module):
@@ -43,8 +43,15 @@ def generate_data():
 
     for i in range(len(my_input_de_prueba)):
         my_x.append(generate_numpyarray(my_input_de_prueba[i]))
-       # my_y.append(get_features2(my_input_de_prueba[i]))
+        my_y.append(get_features2(my_input_de_prueba[i]))
     return my_x, my_y    
+
+def generate_data_tests():
+    my_x= []
+    for i in range(len(my_input_de_test)):
+        my_x.append(generate_numpyarray(my_input_de_test[i]))
+    return my_x
+
 
 
 #SQUASHING FUNCTION
@@ -99,7 +106,7 @@ def train(number_of_iterations=1):
         inputs = Variable(torch.as_tensor(inputs).float())
         targets = Variable(torch.as_tensor(outputs).float())
         y_pred = model(inputs)
-        targets = targets.view(1,4)
+        targets = targets.view(len(inputs),4)
         loss_fn = criterion(y_pred,targets)
 
         #letsdosome gradient
@@ -111,98 +118,109 @@ def train(number_of_iterations=1):
         print('Iteration '+str(t)+': ',loss_fn.item())
 
     print('DONE')
-    model.save_state_dict('./model.pt')
+    torch.save(model.state_dict(),('./model.pt'))
+    print('Guardado')
 
 
 
-def test(test_data):
+def test():
+    model = LinearRegression(5,4) 
     model.load_state_dict(torch.load('./model.pt'))
-    y_pred = model(test_data)
-    return y_pred.data.detach()
+    inputs = generate_data_tests()
+    inputs = Variable(torch.as_tensor(inputs).float())
+    y_pred = model(inputs)
+    print(y_pred.data)
+    return y_pred
+
+
+
 
 #los sentimientos pueden ser 5 = SAD,HAPPY,ANGRY,BORED,TIRED
 #las posibilidades de weather pueden ser 5 WET GLOOMY FREEZE HOT NICE 
+
+#TODO: hacer plot, poner más inputs con más canciones 
+#TODO: hacer test de si tiene sentido 
 
 
 #tempo -> float bpm
 #instrumentalness from 0.5 to 1.0 (non vocal content)
 #ENERGY from 0.0 to 1.0 (1.0 is high energy like Death Metal)
-#DANCEABILITY from 0.0 to 1.0 (1.0 is really danceable)
-# def get_features(y):
-#     res = dict()
-#     if y==WET:
-#         res["tempo"] = 
-#         res["instrumentalness"]=
-#         res["energy"]=
-#         res["danceability"]=
-#         res = json.dumps(res)
-#         return res
-#     elif y==NICE:
-#         res["tempo"] = 
-#         res["instrumentalness"]=
-#         res["energy"]=
-#         res["danceability"]=
-#         res = json.dumps(res)
-#         return res
-#     elif y==GLOOMY:
-#         res["tempo"] = 
-#         res["instrumentalness"]=
-#         res["energy"]=
-#         res["danceability"]=
-#         res = json.dumps(res)
-#         return res
-#      elif y==HOT:
-#         res["tempo"] = 
-#         res["instrumentalness"]=
-#         res["energy"]=
-#         res["danceability"]=
-#         res = json.dumps(res)
-#         return res
-#      elif y==FREEZE:
-#         res["tempo"] = 
-#         res["instrumentalness"]=
-#         res["energy"]=
-#         res["danceability"]=
-#         res = json.dumps(res)
-#         return res
+#DANCEABILITY from 0.0 to 1.0 (1.0 is really danceable) [GLOOMY, NICE, FREEZE,HOT]
+def get_features(y):
+    res = dict()
+    if y==WET:
+        res["tempo"] = sigmoid(123.844)
+        res["instrumentalness"]=0.883
+        res["energy"]=0.344
+        res["danceability"]=0.576
+        res = json.dumps(res)
+        return res
+    elif y==NICE:
+        res["tempo"] = sigmoid(118.05)
+        res["instrumentalness"]=0.00000583
+        res["energy"]=0.792
+        res["danceability"]= 0.829
+        res = json.dumps(res)
+        return res
+    elif y==GLOOMY:
+        res["tempo"] = sigmoid(174.117)
+        res["instrumentalness"]=0.000366
+        res["energy"]=0.0581
+        res["danceability"]=0.345
+        res = json.dumps(res)
+        return res
+    elif y==HOT:
+        res["tempo"] = sigmoid(129.221)
+        res["instrumentalness"]=0
+        res["energy"]=0.887
+        res["danceability"]=0.869
+        res = json.dumps(res)
+        return res
+    elif y==FREEZE:
+        res["tempo"] = sigmoid(128.993)
+        res["instrumentalness"]=0.888
+        res["energy"]=0.175
+        res["danceability"]=0.371
+        res = json.dumps(res)
+        return res
+            
     
-    
-# def get_features2(y):
-#     if y==WET:
-#         tempo =sigmoid()
-#         instrumentalness= 
-#         danceability=
-#         energy =    
-#         a = np.array([tempo,instrumentalness,danceability,energy])
-#         return a
-#     elif y==NICE:
-#         tempo =sigmoid()
-#         instrumentalness= 
-#         danceability=
-#         energy = 
-#         a = np.array([tempo,instrumentalness,danceability,energy])   
-#         return a
-#     elif y==GLOOMY:
-#         tempo =sigmoid()
-#         instrumentalness= 
-#         danceability=
-#         energy = 
-#         a = np.array([tempo,instrumentalness,danceability,energy])   
-#         return a
-#      elif y==HOT:
-#         tempo =sigmoid()
-#         instrumentalness= 
-#         danceability=
-#         energy = 
-#         a = np.array([tempo,instrumentalness,danceability,energy])   
-#         return a
-#      elif y==FREEZE:
-#         tempo =sigmoid()
-#         instrumentalness= 
-#         danceability=
-#         energy = 
-#         a = np.array([tempo,instrumentalness,danceability,energy])   
-#         return a
+def get_features2(y):
+    if y==WET:
+        tempo = sigmoid(123.844)
+        instrumentalness= 0.883
+        energy= 0.344
+        danceability= 0.576
+        a = np.array([tempo,instrumentalness,danceability,energy])
+        return a
+    elif y==NICE:
+        tempo = sigmoid(118.05)
+        instrumentalness=0.00000583
+        energy=0.792
+        danceability= 0.829
+        a = np.array([tempo,instrumentalness,danceability,energy])   
+        return a
+    elif y==GLOOMY:
+        tempo = sigmoid(174.117)
+        instrumentalness=0.000366
+        energy=0.0581
+        danceability=0.345
+        a = np.array([tempo,instrumentalness,danceability,energy])   
+        return a
+    elif y==HOT:
+        tempo = sigmoid(129.221)
+        instrumentalness=0
+        energy=0.887
+        danceability=0.869
+        a = np.array([tempo,instrumentalness,danceability,energy])   
+        return a
+    elif y==FREEZE:
+        tempo = sigmoid(128.993)
+        instrumentalness=0.888
+        energy=0.175
+        danceability=0.371
+        a = np.array([tempo,instrumentalness,danceability,energy])   
+        return a
 
 
 #SPOTIFY URI WHERE WE PICK THE VALUES 
@@ -214,17 +232,21 @@ hot='spotify:track:1H5tvpoApNDxvxDexoaAUo'
 nice='spotify:track:0tZkVZ9DeAa0MNK2gY5NtV'
 
 
+#TODO: visualizar y provar 
+
 if __name__ == "__main__":
     train(300)
-    inputs = []
-    for i in range(len(my_input_de_test)):
-            inputs.append(generate_numpyarray(my_input_de_test[i]))
-    output = test(inputs)
-    print(output)
+    test()
 
 
-    if sys.argv[1] == "train":
-        #path donde guardar los pesos y numero de iteraciones 
-        train(sys.argv[2])
+
+    # if sys.argv[1] == "train":
+    #     #path donde guardar los pesos y numero de iteraciones 
+    #     train(sys.argv[2])
     # if sys.argv[1] == "test":
     #     test(test_data)
+
+#tensor([[0.4749, 0.1475, 0.4253, 0.4014],
+        # [1.0499, 0.0119, 0.5513, 0.5331],
+        # [0.9689, 0.3906, 0.2744, 0.2109],
+        # [0.8143, 0.3371, 0.9320, 0.2388]])
