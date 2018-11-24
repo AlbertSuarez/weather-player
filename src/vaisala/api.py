@@ -1,8 +1,10 @@
-from src import *
-from collections import Counter
 import operator
 
+from collections import Counter
 from influxdb import InfluxDBClient
+
+from src import *
+
 
 WXT536_BASE_NAME = 'urn:dev:vaisala:WXT530:P3110408_'
 

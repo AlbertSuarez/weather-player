@@ -15,6 +15,7 @@ GLOOMY = "gloomy"
 FREEZE = "freezing"
 HOT = "hot"
 NICE = "nice"
+
 INSTANT = "W1"
 F15 = "W2"
 F60 = "W3"
