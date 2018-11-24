@@ -20,7 +20,7 @@ HOT = "hot"
 NICE = "nice"
 
 HAPPY = "happy"
-BORED = "bored"
+RELAXED = "relaxed"
 SAD = "sad"
 TIRED ="tired"
 ANGRY = "angry"
