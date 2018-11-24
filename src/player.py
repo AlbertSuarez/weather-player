@@ -24,8 +24,11 @@ def index():
 def player():
     weather = request.args.get('weather')
     uri = request.args.get('uri')
+    splitted_uri = uri.split(':')
     params = {
-        'current_weather': weather
+        'current_weather': weather,
+        'user_id': splitted_uri[2],
+        'playlist_id': splitted_uri[4]
     }
     return render_template('player.html', params=params)
 

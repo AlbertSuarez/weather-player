@@ -50,10 +50,10 @@
         <video loop muted autoplay poster="{{ url_for('static', filename='images/404.png') }}"
                class="fullscreen-bg__video"></video>
         {% endif %}
-        <div class="inner" class="spotify">
+        <div class="inner">
             <iframe
-                    src="https://open.spotify.com/embed/user/faixelorihinal/playlist/788Ov4sFzjgzgUsnD0G31P" width="300"
-                    height="380" frameborder="0" allowtransparency="true" allow="encrypted-media">
+                src="https://open.spotify.com/embed/user/{{ params.user_id }}/playlist/{{ params.playlist_id }}" width="300"
+                height="380" frameborder="0" allowtransparency="true" allow="encrypted-media">
             </iframe>
         </div>
 
