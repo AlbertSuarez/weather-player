@@ -6,34 +6,45 @@ import requests
 import string
 import urllib.parse
 
-SPOTIFY_API_BASE_URL = 'https://accounts.spotify.com{}'
-SPOTIFY_SRV_BASE_URL = 'https://localhost{}'
+from src import *
+
+
+if DEVELOPMENT_MODE:
+    SPOTIFY_SRV_BASE_URL = 'http://localhost:8081{}'
+else:
+    SPOTIFY_SRV_BASE_URL = 'https://weather-player.com{}'
+
+
+SPOTIFY_DEBUG = True
+SPOTIFY_ACC_BASE_URL = 'https://accounts.spotify.com{}'
+SPOTIFY_API_BASE_URL = 'https://api.spotify.com/v1{}'
 SPOTIFY_REDIRECT_URI = SPOTIFY_SRV_BASE_URL.format('/callback')
 SPOTIFY_AUTH_SCOPES = ['playlist-modify-public', 'user-top-read']
-SPOTIFY_CLIENT_ID = '1a47f705dfca49b09c7ea6fec6070b8d'
-SPOTIFY_CLIENT_SECRET = '8546bb88f48541f585f208c3b86c6f33'
+SPOTIFY_CLIENT_ID = 'ca9e01ed39da4b3ab0ef6e69a9d9fd0a'
+SPOTIFY_CLIENT_SECRET = 'b67a0a50eca84387838c31fec4c2494b'
 SPOTIFY_STATE_DICT = {}
 
 def __str2bytes(str):
     return str.encode("utf-8")
 def __bytes2str(byt):
     return byt.decode("utf-8")
+def dprint(msg):
+    if SPOTIFY_DEBUG:
+        print(msg)
 
 def do_request(url, method='get', params=None, headers=None, allow_redirects=False):
     _method = requests.get
     if method == 'post':
         _method = requests.post
-    print('------')
-    print('request: {method} on {url}'.format(method=method, url=url))
-    print('params: {params}'.format(params=params))
-    print('headers: {headers}'.format(headers=headers))
-    print('------')
+    dprint('------')
+    dprint('request: {method} on {url}'.format(method=method, url=url))
+    dprint('params: {params}'.format(params=params))
+    dprint('headers: {headers}'.format(headers=headers))
     request = _method(url, params=params, headers=headers, allow_redirects=allow_redirects)
-    print('------')
-    print('headers: {headers}'.format(headers=sorted(request.headers)))
-    print('response: {status_code}'.format(status_code=request.status_code))
-    print('{content}'.format(content=request.content))
-    print('------')
+    dprint('\nheaders: {headers}'.format(headers=sorted(request.headers)))
+    dprint('response: {status_code}'.format(status_code=request.status_code))
+    dprint('{content}'.format(content=request.content))
+    dprint('------\n')
     return (request.status_code, request.content)
 
 def get_redir_url(auth_state):
@@ -48,7 +59,7 @@ def get_redir_url(auth_state):
         key=key,
         value=urllib.parse.quote(value, safe='')) for key, value in raw_params.items()
     )
-    return SPOTIFY_API_BASE_URL.format('/authorize?{params}'.format(params=params))
+    return SPOTIFY_ACC_BASE_URL.format('/authorize?{params}'.format(params=params))
 
 def get_new_auth_state(
         size=8,
@@ -84,7 +95,7 @@ def request_access_token(auth_state):
         }
 
     status_code, content = do_request(
-        SPOTIFY_API_BASE_URL.format('/api/token'),
+        SPOTIFY_ACC_BASE_URL.format('/api/token'),
         'post',
         params=params,
         headers={
@@ -111,15 +122,54 @@ def request_access_token(auth_state):
         SPOTIFY_STATE_DICT[auth_state]['expire'] = expire_date
         SPOTIFY_STATE_DICT[auth_state]['count'] += 1
 
-        print('------')
-        print('Good! Access token will expire in {duration}s, or roughly at {timestamp}'.format(
+        dprint('Good! Access token will expire in {duration}s, or roughly at {timestamp}'.format(
             duration=duration_seconds,
             timestamp=expire_date
         ))
-        print('------')
     else:
-        print('------')
-        print('ERROR: status code {}'.format(status_code))
-        print(content)
-        print('------')
+        dprint('------')
+        dprint('ERROR: status code {}'.format(status_code))
+        dprint('------')
+
+def call_api(state, url):
+    if state not in SPOTIFY_STATE_DICT:
+        print('FATAL ERROR!!!')
+        print('The state <{state}> should be registered'.format(state))
+        return
+
+    if datetime.datetime.now() >= SPOTIFY_STATE_DICT[state]['expire']:
+        dprint('------ Access token has expired! Claiming another one...')
+        request_access_token(state)
+        dprint('------ Success!')
+
+    status_code, content = do_request(
+        SPOTIFY_API_BASE_URL.format(url),
+        'get',
+        headers={
+            'Authorization': 'Bearer {}'.format(SPOTIFY_STATE_DICT[state]['access'])
+        }
+    )
+    if status_code != 200:
+        dprint('------')
+        dprint('ERROR: status code {}'.format(status_code))
+        dprint('------')
+        return None
+    return json.loads(__bytes2str(content))
+
+def get_audio_features(state, uri):
+    print(call_api(state, '/audio-features/{}'.format(uri)))
+
+def pre():
+    state = get_new_auth_state()
+    return state, get_redir_url(state)
+
+def mid(url):
+    url = url.replace('{}/callback?'.format(SPOTIFY_SRV_BASE_URL), '')
+    url = url.split('&')
+    url = {token.split('=')[0]: token.split('=')[1] for token in url}
+    return url['state'], url['code']
+
+def post(state, code):
+    auth_bind_pair(state, code)
+    request_access_token(state)
 

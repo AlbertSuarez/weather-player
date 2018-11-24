@@ -4,3 +4,4 @@ uWSGI
 uwsgitop
 influxdb
 urllib3
+requests

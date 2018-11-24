@@ -51,15 +51,16 @@
         if (itemValue == null) {
             window.alert("C'mon, don't be shy! How are you feeling?");
         } else {
-            $.ajax({
-                url: "http://localhost:8081/auth",
-                type: "GET",
-                success: function() {
-                    alert('Success!' + authHeader);
-                }
-            });
+            newWin = window.open("/auth", "Spotify Login", "width=500,height=500");
+            newWin.onbeforeunload = function(){
+            	console.log("I closed :)")
+                var myPlay = document.getElementById('play');
+                var myLoader = document.getElementById('load');
+                myPlay.style.display = 'none'
+                myLoader.style.display = 'block'
+				newWin.close()
+			}
         }
     })
-
 
 })(jQuery);
