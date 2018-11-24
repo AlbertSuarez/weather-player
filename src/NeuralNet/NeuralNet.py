@@ -226,11 +226,20 @@ def get_features2(y):
 #SPOTIFY URI WHERE WE PICK THE VALUES 
 
 wet= 'spotify:track:0mPVXHJ4Aibai5VA0F4Lwa'
+wet2=
+wet3=
 gloomy= 'spotify:track:3JOVTQ5h8HGFnDdp4VT3MP'
+gloomy2=
+gloomy3=
 freeze='spotify:track:6JfGyDX7mlvV6Ij3j4tm9q'
+freeze2=
+freeze3=
 hot='spotify:track:1H5tvpoApNDxvxDexoaAUo'
+hot2=
+hot3=
 nice='spotify:track:0tZkVZ9DeAa0MNK2gY5NtV'
-
+nice2=
+nice3=
 
 #TODO: visualizar y provar 
 
