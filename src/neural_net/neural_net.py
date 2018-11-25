@@ -10,7 +10,7 @@ import sys
 import json
 import math
 
-from src import     
+from src import *
 
 
 
