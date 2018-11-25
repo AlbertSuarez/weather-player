@@ -53,7 +53,7 @@
         if (itemValue == null) {
             window.alert("C'mon, don't be shy! How are you feeling?");
         } else {
-            $('#input_gen_mode').val('instant');
+            $('#input_genmode').val('instant');
             $('#form_submit').submit();
         }
     })
@@ -62,7 +62,7 @@
         if (itemValue == null) {
             window.alert("C'mon, don't be shy! How are you feeling?");
         } else {
-            $('#input_gen_mode').val('predictive');
+            $('#input_genmode').val('predictive');
             $('#form_submit').submit();
         }
     })
