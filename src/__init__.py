@@ -22,7 +22,7 @@ NICE = "nice"
 HAPPY = "happy"
 RELAXED = "relaxed"
 SAD = "sad"
-TIRED ="tired"
+ACTIVE = "active"
 ANGRY = "angry"
 
 

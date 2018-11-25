@@ -9,7 +9,7 @@ import urllib.parse
 from src import *
 
 
-### Constants
+# Constants
 ###############################################################################
 
 if DEVELOPMENT_MODE:
@@ -29,25 +29,29 @@ SPOTIFY_STATE_DICT = {}
 SPOTIFY_SEEDS = {
     "HAPPY":   "3AszgPDZd9q0DpDFt4HFBy",  # OutKast - Hey Ya!
     "RELAXED": "3kxfsdsCpFgN412fpnW85Y",  # Childish Gambino - Redbone
-    "TIRED":   "6K4t31amVTZDgR3sKmwUJJ",  # Tame Impala - The Less I Know The Better
+    "ACTIVE":   "6K4t31amVTZDgR3sKmwUJJ",  # Tame Impala - The Less I Know The Better
     "SAD":     "5wj4E6IsrVtn8IBJQOd0Cl",  # Oasis - Wonderwall
     "ANGRY":   "2DlHlPMa4M17kufBvI2lEN"   # System Of A Down - Chop Suey!
 }
 
 
-### Utils
+# Utils
 ###############################################################################
 
 def __str2bytes(str):
     return str.encode("utf-8")
+
+
 def __bytes2str(byt):
     return byt.decode("utf-8")
+
+
 def dprint(msg):
     if SPOTIFY_DEBUG:
         print(msg)
 
 
-### Main functions
+# Main functions
 ###############################################################################
 
 def do_request(url, method='get', params=None, headers=None, allow_redirects=False, params2json=False):
@@ -68,12 +72,13 @@ def do_request(url, method='get', params=None, headers=None, allow_redirects=Fal
     dprint('response: {status_code}'.format(status_code=request.status_code))
     dprint('{content}'.format(content=request.content))
     dprint('------\n')
-    return (request.status_code, request.content)
+    return request.status_code, request.content
+
 
 def request_access_token(state, ovrCLIENTID=None, ovrCLIENTSE=None, ovrCLIENTRE=None):
     if state not in SPOTIFY_STATE_DICT:
         print('FATAL ERROR!!!')
-        print('The state <{state}> should be registered'.format(state))
+        print('The state <{}> should be registered'.format(state))
         return
     if SPOTIFY_STATE_DICT[state]['count'] == 0:
         params = {
@@ -103,7 +108,7 @@ def request_access_token(state, ovrCLIENTID=None, ovrCLIENTSE=None, ovrCLIENTRE=
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     )
-    if status_code >= 200 and status_code < 300:
+    if 200 <= status_code < 300:
         content = json.loads(__bytes2str(content))
 
         duration_seconds = int(content.get('expires_in', 0))
@@ -124,10 +129,11 @@ def request_access_token(state, ovrCLIENTID=None, ovrCLIENTSE=None, ovrCLIENTRE=
         dprint('ERROR: status code {}'.format(status_code))
         dprint('------')
 
+
 def call_api(state, url, params=None, method='get', params2json=False, ovrCLIENTID=None, ovrCLIENTSE=None, ovrCLIENTRE=None):
     if state not in SPOTIFY_STATE_DICT:
         print('FATAL ERROR!!!')
-        print('The state <{state}> should be registered'.format(state))
+        print('The state <{}> should be registered'.format(state))
         return
 
     if SPOTIFY_STATE_DICT[state]['expire'] is None \
@@ -154,7 +160,7 @@ def call_api(state, url, params=None, method='get', params2json=False, ovrCLIENT
     return json.loads(__bytes2str(content))
 
 
-### Binders
+# Binders
 ###############################################################################
 
 def bind_auth_code(state, auth_code):
@@ -165,6 +171,7 @@ def bind_auth_code(state, auth_code):
         'expire': None
     })
 
+
 def bind_state_info(state, weather, feeling, genmode):
     SPOTIFY_STATE_DICT[state].update({
         'weather': weather,
@@ -172,13 +179,14 @@ def bind_state_info(state, weather, feeling, genmode):
         'genmode': genmode
     })
 
+
 def bind_playlist_uri(state, playlist_uri):
     SPOTIFY_STATE_DICT[state].update({
         'playlist': playlist_uri
     })
 
 
-### Getters
+# Getters
 ###############################################################################
 
 def get_new_state():
@@ -191,17 +199,22 @@ def get_new_state():
     SPOTIFY_STATE_DICT[state] = {}
     return state
 
+
 def get_weather(state):
     return SPOTIFY_STATE_DICT[state]['weather']
+
 
 def get_feeling(state):
     return SPOTIFY_STATE_DICT[state]['feeling']
 
+
 def get_playlist(state):
     return SPOTIFY_STATE_DICT[state]['playlist']
 
+
 def get_genmode(state):
     return SPOTIFY_STATE_DICT[state]['genmode']
+
 
 def get_redir_url(state):
     raw_params = {
@@ -218,7 +231,7 @@ def get_redir_url(state):
     return SPOTIFY_ACC_BASE_URL.format('/authorize?{params}'.format(params=params))
 
 
-### Neural Network Shite
+# Neural Network Shite
 ###############################################################################
 
 def obtain_songs(state, feeling, weather, neural_params, shuffle=True):
@@ -234,6 +247,7 @@ def obtain_songs(state, feeling, weather, neural_params, shuffle=True):
         random.shuffle(song_list)
     return song_list
 
+
 def create_playlist(state, feeling, weather):
     playlist = call_api(state, '/me/playlists', params={
         'name': '{feeling} songs for a {weather} day'.format(feeling=feeling[0].upper()+feeling[1:].lower(), weather=weather.lower()),
@@ -243,6 +257,7 @@ def create_playlist(state, feeling, weather):
     playlist_uri = playlist['uri']
     bind_playlist_uri(state, playlist_uri)
     return playlist_id
+
 
 def add_songs_to_playlist(state, playlist_id, uris):
     call_api(state, '/playlists/{playlist_id}/tracks'.format(playlist_id=playlist_id), params={
