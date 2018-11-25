@@ -102,3 +102,50 @@ def player():
         'playlist_id': splitted_uri[4]
     }
     return render_template('player.html', params=params)
+
+
+
+
+
+
+@flask_app.route('/auth2')
+def auth2():
+    state = spotify.get_new_state()
+    raw_params = {
+        'client_id': '1a47f705dfca49b09c7ea6fec6070b8d',
+        'redirect_uri': spotify.SPOTIFY_SRV_BASE_URL.format('/callback2'),
+        'scope': ' '.join(spotify.SPOTIFY_AUTH_SCOPES),
+        'state': state,
+        'response_type': 'code'
+    }
+    import urllib.parse
+    params = '&'.join('{key}={value}'.format(
+        key=key,
+        value=urllib.parse.quote(value, safe='')) for key, value in raw_params.items()
+    )
+    redirect_url = spotify.SPOTIFY_ACC_BASE_URL.format('/authorize?{params}'.format(params=params))
+    response = redirect(redirect_url)
+    response.headers = {'Access-Control-Allow-Origin': '*'}
+    return response
+
+@flask_app.route('/callback2')
+def callback2():
+    state = request.args.get('state')
+    auth_code = request.args.get('code')
+    spotify.bind_auth_code(state, auth_code)
+    redirect_url = '/uri2json?state={state}&uri='.format(state=state)
+    return redirect(redirect_url)
+
+@flask_app.route('/uri2json')
+def uri2json():
+    state = request.args.get('state')
+    song_uri = request.args.get('uri')
+    song_id = song_uri.split(':')[-1]
+    track_features = spotify.call_api(state, '/audio-features/{id}'.format(id=song_id),
+        ovrCLIENTID='1a47f705dfca49b09c7ea6fec6070b8d',
+        ovrCLIENTSE='8546bb88f48541f585f208c3b86c6f33',
+        ovrCLIENTRE=spotify.SPOTIFY_SRV_BASE_URL.format('/callback2'))
+    import json
+    return '<pre>{}</pre>'.format(json.dumps(track_features, indent=2))
+
+

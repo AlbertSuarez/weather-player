@@ -70,7 +70,7 @@ def do_request(url, method='get', params=None, headers=None, allow_redirects=Fal
     dprint('------\n')
     return (request.status_code, request.content)
 
-def request_access_token(state):
+def request_access_token(state, ovrCLIENTID=None, ovrCLIENTSE=None, ovrCLIENTRE=None):
     if state not in SPOTIFY_STATE_DICT:
         print('FATAL ERROR!!!')
         print('The state <{state}> should be registered'.format(state))
@@ -79,7 +79,7 @@ def request_access_token(state):
         params = {
             'grant_type': 'authorization_code',
             'code': SPOTIFY_STATE_DICT[state]['access'],
-            'redirect_uri': SPOTIFY_REDIRECT_URI
+            'redirect_uri': SPOTIFY_REDIRECT_URI if ovrCLIENTRE is None else ovrCLIENTRE
         }
     else:
         params = {
@@ -95,8 +95,8 @@ def request_access_token(state):
             'Authorization': 'Basic {}'.format(
                 __bytes2str(base64.b64encode(
                     __str2bytes('{}:{}'.format(
-                        SPOTIFY_CLIENT_ID,
-                        SPOTIFY_CLIENT_SECRET
+                        SPOTIFY_CLIENT_ID if ovrCLIENTID is None else ovrCLIENTID,
+                        SPOTIFY_CLIENT_SECRET if ovrCLIENTSE is None else ovrCLIENTSE
                     ))
                 ))
             ),
@@ -124,7 +124,7 @@ def request_access_token(state):
         dprint('ERROR: status code {}'.format(status_code))
         dprint('------')
 
-def call_api(state, url, params=None, method='get', params2json=False):
+def call_api(state, url, params=None, method='get', params2json=False, ovrCLIENTID=None, ovrCLIENTSE=None, ovrCLIENTRE=None):
     if state not in SPOTIFY_STATE_DICT:
         print('FATAL ERROR!!!')
         print('The state <{state}> should be registered'.format(state))
@@ -133,7 +133,7 @@ def call_api(state, url, params=None, method='get', params2json=False):
     if SPOTIFY_STATE_DICT[state]['expire'] is None \
        or SPOTIFY_STATE_DICT[state]['expire'] <= datetime.datetime.now():
         dprint('------ Access token has expired! Claiming another one...')
-        request_access_token(state)
+        request_access_token(state, ovrCLIENTID=ovrCLIENTID, ovrCLIENTSE=ovrCLIENTSE, ovrCLIENTRE=ovrCLIENTRE)
         dprint('------ Success!')
 
     status_code, content = do_request(
