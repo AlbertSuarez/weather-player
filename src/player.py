@@ -1,3 +1,5 @@
+import webbrowser
+
 from flask import Flask, render_template, redirect, request
 from src.vaisala.api import get_current_weather
 from src.spotify import spotify
@@ -32,9 +34,11 @@ def auth():
     genmode = request.args.get('genmode')
     spotify.bind_state_info(state, weather, feeling, genmode)
     redirect_url = spotify.get_redir_url(state)
-    response = redirect(redirect_url)
-    response.headers = {'Access-Control-Allow-Origin': '*'}
-    return response
+    webbrowser.open_new_tab(redirect_url)
+    return redirect(spotify.SPOTIFY_SRV_BASE_URL.format('/'))
+    # response = redirect(redirect_url)
+    # response.headers = {'Access-Control-Allow-Origin': '*'}
+    # return response
 
 
 @flask_app.route('/callback')
@@ -104,10 +108,6 @@ def player():
     return render_template('player.html', params=params)
 
 
-
-
-
-
 @flask_app.route('/auth2')
 def auth2():
     state = spotify.get_new_state()
@@ -128,6 +128,7 @@ def auth2():
     response.headers = {'Access-Control-Allow-Origin': '*'}
     return response
 
+
 @flask_app.route('/callback2')
 def callback2():
     state = request.args.get('state')
@@ -136,16 +137,15 @@ def callback2():
     redirect_url = '/uri2json?state={state}&uri='.format(state=state)
     return redirect(redirect_url)
 
+
 @flask_app.route('/uri2json')
 def uri2json():
     state = request.args.get('state')
     song_uri = request.args.get('uri')
     song_id = song_uri.split(':')[-1]
     track_features = spotify.call_api(state, '/audio-features/{id}'.format(id=song_id),
-        ovrCLIENTID='1a47f705dfca49b09c7ea6fec6070b8d',
-        ovrCLIENTSE='8546bb88f48541f585f208c3b86c6f33',
-        ovrCLIENTRE=spotify.SPOTIFY_SRV_BASE_URL.format('/callback2'))
+                                      ovrCLIENTID='1a47f705dfca49b09c7ea6fec6070b8d',
+                                      ovrCLIENTSE='8546bb88f48541f585f208c3b86c6f33',
+                                      ovrCLIENTRE=spotify.SPOTIFY_SRV_BASE_URL.format('/callback2'))
     import json
     return '<pre>{}</pre>'.format(json.dumps(track_features, indent=2))
-
-
