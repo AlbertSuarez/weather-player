@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request
 from src.vaisala.api import get_current_weather
 from src.spotify import spotify
 from src.neural_net import neural_net
+from src.darksky import darksky
 
 from src import *
 
@@ -47,16 +48,39 @@ def callback():
 @flask_app.route('/playlist')
 def playlist():
     state = request.args.get('state')
-    weather = spotify.get_weather()
-    feeling = spotify.get_feeling()
+    weather_vaisala = spotify.get_weather(state)
+    feeling = spotify.get_feeling(state)
 
-    # Process with NN
-    res = neural_net.execute([weather])
-    #keys:tempo, instrumentalness,danceability,energy
-    
-    uri = spotify.obtain_playlist_from_neural_net_data(state, feeling, weather, res)
+    forecast_vaisala = [[weather_vaisala, (3*60+30)*1000]]
+    forecast_darksky = darksky.get_forecast()
 
-    spotify.bind_playlist_uri(state, uri)
+    spotify.dprint('-------')
+    spotify.dprint(forecast_darksky)
+    spotify.dprint('-------')
+
+    for fc in forecast_darksky:
+        fc[1] *= 60*1000
+    forecast = forecast_vaisala + forecast_darksky
+
+    spotify.dprint('-------')
+    spotify.dprint(forecast)
+    spotify.dprint('-------')
+
+    song_list = []
+    for weather, duration_total in forecast:
+        neural_params = neural_net.execute([weather])
+        songs_found = spotify.obtain_songs(state, feeling, weather, neural_params)
+        duration_sum = 0
+        song_index = 0
+        while duration_sum <= duration_total - (1*60+30)*1000 and song_index < len(songs_found):
+            duration_sum += songs_found[song_index]['duration_ms']
+            song_index += 1
+        song_list.extend(songs_found[:song_index])
+        spotify.dprint('song_index: {}'.format(song_index))
+    spotify.dprint('-------')
+
+    playlist_id = spotify.create_playlist(state, feeling, weather)
+    spotify.add_songs_to_playlist(state, playlist_id, song_list)
 
     return redirect('/player?state={state}'.format(state=state))
 
@@ -64,8 +88,8 @@ def playlist():
 @flask_app.route('/player')
 def player():
     state = request.args.get('state')
-    weather = spotify.get_weather()
-    uri = spotify.get_playlist()
+    weather = spotify.get_weather(state)
+    uri = spotify.get_playlist(state)
     splitted_uri = uri.split(':')
     params = {
         'current_weather': weather,
