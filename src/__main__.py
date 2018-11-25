@@ -2,6 +2,9 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from src.player import flask_app
+from src.darksky import darksky
+
+darksky.get_forecast()
 
 
 if __name__ == '__main__':
