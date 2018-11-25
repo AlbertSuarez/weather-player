@@ -165,10 +165,11 @@ def bind_auth_code(state, auth_code):
         'expire': None
     })
 
-def bind_state_info(state, weather, feeling):
+def bind_state_info(state, weather, feeling, genmode):
     SPOTIFY_STATE_DICT[state].update({
         'weather': weather,
-        'feeling': feeling
+        'feeling': feeling,
+        'genmode': genmode
     })
 
 def bind_playlist_uri(state, playlist_uri):
@@ -198,6 +199,9 @@ def get_feeling(state):
 
 def get_playlist(state):
     return SPOTIFY_STATE_DICT[state]['playlist']
+
+def get_genmode(state):
+    return SPOTIFY_STATE_DICT[state]['genmode']
 
 def get_redir_url(state):
     raw_params = {
