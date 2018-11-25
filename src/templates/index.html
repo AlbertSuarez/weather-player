@@ -53,6 +53,7 @@
         <form id="form_submit" action="/auth" method="GET">
           <input type="hidden" name="weather" id="input_weather" value="{{ params.current_weather }}" />
           <input type="hidden" name="feeling" id="input_feeling" value="" />
+          <input type="hidden" name="gen_mode" id="input_gen_mode" value="" />
 
           <div class="container">
             <div class="select-dropdown">
@@ -69,7 +70,8 @@
             </div>
           </div>
 
-          <a id="play" class="button special">Play</a>
+          <a id="instant" class="button special">Instant</a>
+          <a id="predictive" class="button special">Predictive</a>
           <a id="load" class="loader" ></a>
         </form>
 

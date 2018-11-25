@@ -49,10 +49,20 @@
         $('.select-dropdown__list').toggleClass('active');
     });
 
-    $('#play').on('click', function(){
+    $('#instant').on('click', function(){
         if (itemValue == null) {
             window.alert("C'mon, don't be shy! How are you feeling?");
         } else {
+            $('#input_gen_mode').val('instant');
+            $('#form_submit').submit();
+        }
+    })
+
+    $('#predictive').on('click', function(){
+        if (itemValue == null) {
+            window.alert("C'mon, don't be shy! How are you feeling?");
+        } else {
+            $('#input_gen_mode').val('predictive');
             $('#form_submit').submit();
         }
     })
