@@ -82,8 +82,7 @@ def playlist():
             duration_sum += songs_found[song_index]['duration_ms']
             song_index += 1
         song_list.extend(songs_found[:song_index])
-        spotify.dprint('song_index: {}'.format(song_index))
-    spotify.dprint('-------')
+        spotify.dprint(' ------- song_index: {}'.format(song_index))
 
     playlist_id = spotify.create_playlist(state, feeling, weather)
     spotify.add_songs_to_playlist(state, playlist_id, song_list)
