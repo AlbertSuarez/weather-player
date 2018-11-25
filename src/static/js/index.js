@@ -40,31 +40,24 @@
         $('.select-dropdown__list').toggleClass('active');
     });
 
-    var itemValue = null
     $('.select-dropdown__list-item').on('click', function(){
-        itemValue = $(this).data('value');
+        var itemValue = $(this).data('value');
         console.log(itemValue);
         $('#input_feeling').val(itemValue);
         $('.select-dropdown__button span').text($(this).text()).parent().attr('data-value', itemValue);
         $('.select-dropdown__list').toggleClass('active');
+        $('#instant').removeClass('disabled');
+        $('#predictive').removeClass('disabled');
     });
 
     $('#instant').on('click', function(){
-        if (itemValue == null) {
-            window.alert("C'mon, don't be shy! How are you feeling?");
-        } else {
-            $('#input_gen_mode').val('instant');
-            $('#form_submit').submit();
-        }
+        $('#input_gen_mode').val('instant');
+        $('#form_submit').submit();
     })
 
     $('#predictive').on('click', function(){
-        if (itemValue == null) {
-            window.alert("C'mon, don't be shy! How are you feeling?");
-        } else {
-            $('#input_gen_mode').val('predictive');
-            $('#form_submit').submit();
-        }
+        $('#input_gen_mode').val('predictive');
+        $('#form_submit').submit();
     })
 
 })(jQuery);

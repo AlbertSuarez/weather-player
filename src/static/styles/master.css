@@ -476,3 +476,11 @@ body.landing #page-wrapper {
     color: #616161;
     transition: all ease-in-out 0.3s;
 }
+
+/* Disabled <a> */
+
+a.disabled {
+   pointer-events: none;
+   cursor: default;
+   opacity: 0.8;
+}
