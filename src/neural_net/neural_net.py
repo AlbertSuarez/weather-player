@@ -10,19 +10,8 @@ import sys
 import json
 import math
 
-# from src import *    
+from src import     
 
-WET = "wet"
-GLOOMY = "gloomy"
-FREEZE = "freezing"
-HOT = "hot"
-NICE = "nice"
-
-HAPPY = "happy"
-RELAXED = "relaxed"
-SAD = "sad"
-TIRED ="tired"
-ANGRY = "angry"
 
 
 #TESTING INPUT OF TRAINING AND TESTING
@@ -151,7 +140,7 @@ def execute(valores):
     return diccionari
 
 
-#get features in a json object
+#get features in a json object, NOT USED NOW
 def get_features(y):
     res = dict()
     if y==WET:
@@ -226,22 +215,22 @@ def get_features2(y):
             energy=0.42
             instrumentalness=0.898
         elif(i==6):
-            tempo:159.646
-            energy:0.42
-            danceability:0.35
-            instrumentalness:0.898
+            tempo=159.646
+            energy=0.42
+            danceability=0.35
+            instrumentalness=0.898
         else:
-            danceability:0.64
-            energy:0.743
-            instrumentalness:0
-            tempo:122.035
+            danceability=0.64
+            energy=0.743
+            instrumentalness=0
+            tempo=122.035
         
         a = np.array([tempo,instrumentalness,danceability,energy])
 
         return a
 
     elif y==NICE:
-        i = random.randint(0, 6)
+        i = random.randint(0, 5)
         if(i==0):
             energy = 0.457
             tempo=150.953
@@ -258,16 +247,11 @@ def get_features2(y):
             energy=0.418
             instrumentalness= 0.00195
         elif(i==3):
-            tempo=166.72
-            energy=0.176
-            danceability=0.287
-            instrumentalness=0.718
-        elif(i==4):
             tempo=120.175
             energy=0.376
             danceability=0.584
             instrumentalness=0
-        elif(i==5):
+        elif(i==4):
             tempo=147.21
             energy=0.607
             danceability=0.386
@@ -283,12 +267,12 @@ def get_features2(y):
     elif y==GLOOMY:
         i = random.randint(0, 4)
         if(i==0):
-            tempo = (174.117)
+            tempo =174.117
             instrumentalness=0.000366
             energy=0.0581
             danceability=0.345
         elif(i==1):
-            temp=:77.748
+            tempo=77.748
             instrumentalness=0
             danceability=0.581
             energy=0.163
@@ -306,8 +290,8 @@ def get_features2(y):
             danceability=0.38
             energy=0.846
             tempo=89.98
-            ínstrumentalness=0.611
-         a = np.array([tempo,instrumentalness,danceability,energy])   
+            instrumentalness=0.611
+        a = np.array([tempo,instrumentalness,danceability,energy])   
         return a
     elif y==HOT:
         i = random.randint(0, 3)
@@ -338,12 +322,12 @@ def get_features2(y):
     elif y==FREEZE:
         i = random.randint(0, 3)
         if(i==0):
-            tempo = (128.993)
+            tempo = 128.993
             instrumentalness=0.888
             energy=0.175
             danceability=0.371
         elif(i==1):
-            tempo:130.29
+            tempo=130.29
             energy=0.36
             instrumentalness=0
             danceability=0.599
@@ -353,9 +337,9 @@ def get_features2(y):
             instrumentalness=0.0
             danceability=0.537
         else:
-            tempo:143.808
-            energy:0.489
-            danceability:0.439
+            tempo=143.808
+            energy=0.489
+            danceability=0.439
             instrumentalness=0.0
         a = np.array([tempo,instrumentalness,danceability,energy])   
         return a
@@ -419,27 +403,26 @@ nice='spotify:track:0tZkVZ9DeAa0MNK2gY5NtV'
 
 
 
-if __name__ == "__main__":
-    train(10000)
-    # si vull fer-ho hauré de fer un test abans plots(result)
-    res = test()
-    plots(res)
+# if __name__ == "__main__":
+#     train(6500)
+#     res = test()
+#     plots(res)
 
 
-    print("WET weather")
-    execute(["wet"])
+#     print("WET weather")
+#     execute(["wet"])
     
-    print("NICE weather")
-    execute(["nice"])
+#     print("NICE weather")
+#     execute(["nice"])
 
-    print("GLOOMY weather")
-    execute(["gloomy"])
+#     print("GLOOMY weather")
+#     execute(["gloomy"])
     
-    print("FREEZE weather")
-    execute(["freeze"])
+#     print("FREEZE weather")
+#     execute(["freeze"])
     
-    print("HOT  weather")
-    execute(["hot"])
+#     print("HOT  weather")
+#     execute(["hot"])
     
     
     
