@@ -51,12 +51,12 @@
     });
 
     $('#instant').on('click', function(){
-        $('#input_gen_mode').val('instant');
+        $('#input_genmode').val('instant');
         $('#form_submit').submit();
     })
 
     $('#predictive').on('click', function(){
-        $('#input_gen_mode').val('predictive');
+        $('#input_genmode').val('predictive');
         $('#form_submit').submit();
     })
 

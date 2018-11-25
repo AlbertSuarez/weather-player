@@ -29,7 +29,8 @@ def auth():
     state = spotify.get_new_state()
     weather = request.args.get('weather')
     feeling = request.args.get('feeling')
-    spotify.bind_state_info(state, weather, feeling)
+    genmode = request.args.get('genmode')
+    spotify.bind_state_info(state, weather, feeling, genmode)
     redirect_url = spotify.get_redir_url(state)
     response = redirect(redirect_url)
     response.headers = {'Access-Control-Allow-Origin': '*'}
@@ -50,16 +51,21 @@ def playlist():
     state = request.args.get('state')
     weather_vaisala = spotify.get_weather(state)
     feeling = spotify.get_feeling(state)
+    genmode = spotify.get_genmode(state)
 
-    forecast_vaisala = [[weather_vaisala, (3*60+30)*1000]]
-    forecast_darksky = darksky.get_forecast()
+    if genmode == 'instant':
+        forecast_vaisala = [[weather_vaisala, 60*60*1000]]
+        forecast_darksky = []
+    elif genmode == 'predictive':
+        forecast_vaisala = [[weather_vaisala, (3*60+30)*1000]]
+        forecast_darksky = darksky.get_forecast()
+        for fc in forecast_darksky:
+            fc[1] *= 60*1000
+    else:
+        spotify.dprint('---------')
+        spotify.dprint('genmode <{genmode}> not recognised'.format(genmode=genmode))
+        spotify.dprint('---------')
 
-    spotify.dprint('-------')
-    spotify.dprint(forecast_darksky)
-    spotify.dprint('-------')
-
-    for fc in forecast_darksky:
-        fc[1] *= 60*1000
     forecast = forecast_vaisala + forecast_darksky
 
     spotify.dprint('-------')
@@ -76,8 +82,7 @@ def playlist():
             duration_sum += songs_found[song_index]['duration_ms']
             song_index += 1
         song_list.extend(songs_found[:song_index])
-        spotify.dprint('song_index: {}'.format(song_index))
-    spotify.dprint('-------')
+        spotify.dprint(' ------- song_index: {}'.format(song_index))
 
     playlist_id = spotify.create_playlist(state, feeling, weather)
     spotify.add_songs_to_playlist(state, playlist_id, song_list)
