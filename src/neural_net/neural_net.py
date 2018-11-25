@@ -109,7 +109,7 @@ def train(number_of_iterations=1):
         print('Iteration '+str(t)+': ',loss_fn.item())
 
     print('DONE')
-    torch.save(model.state_dict(),('./model.pt'))
+    torch.save(model.state_dict(),('src/neural_net/model.pt'))
     print('Guardado')
 
 

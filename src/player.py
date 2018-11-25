@@ -23,47 +23,13 @@ def index():
     return render_template('index.html', params=params)
 
 
-@flask_app.route('/playlist')
-def playlist():
+@flask_app.route('/auth')
+def auth():
+    state = spotify.get_new_state()
     weather = request.args.get('weather')
     feeling = request.args.get('feeling')
-
-    # Process with NN
-    res = neural_net.execute([weather])
-    #keys:tempo, instrumentalness,danceability,energy
-    
-    # Process with Spotify
-
-
-    # Create Spotify playlist and generate a URI
-
-    return redirect('/player?weather={}&feeling={}&uri={}'.format(weather, feeling, 'spotify:user:alaamoucharrafie:playlist:1fsvlFBWGhk94e5K7Pw7NT'))
-
-
-@flask_app.route('/player')
-def player():
-    weather = request.args.get('weather')
-    uri = request.args.get('uri')
-    splitted_uri = uri.split(':')
-    params = {
-        'current_weather': weather,
-        'user_id': splitted_uri[2],
-        'playlist_id': splitted_uri[4]
-    }
-    import json
-    print()
-    print(json.dumps(spotify.SPOTIFY_STATE_DICT, indent=2))
-    print()
-    return render_template('player.html', params=params)
-
-
-@flask_app.route('/auth', methods=['POST'])
-def auth():
-    auth_state = spotify.get_new_auth_state()
-    weather = request.form['weather']
-    feeling = request.form['feeling']
-    spotify.bind_state_info(auth_state, weather, feeling)
-    redirect_url = spotify.get_redir_url(auth_state)
+    spotify.bind_state_info(state, weather, feeling)
+    redirect_url = spotify.get_redir_url(state)
     response = redirect(redirect_url)
     response.headers = {'Access-Control-Allow-Origin': '*'}
     return response
@@ -71,10 +37,39 @@ def auth():
 
 @flask_app.route('/callback')
 def callback():
-    auth_state = request.args.get('state')
+    state = request.args.get('state')
     auth_code = request.args.get('code')
-    spotify.bind_auth_code(auth_state, auth_code)
-    return redirect('/playlist?weather={weather}&feeling={feeling}'.format(
-        weather=spotify.SPOTIFY_STATE_DICT[auth_state]['weather'],
-        feeling=spotify.SPOTIFY_STATE_DICT[auth_state]['feeling']
-    ))
+    spotify.bind_auth_code(state, auth_code)
+    redirect_url = '/playlist?state={state}'.format(state=state)
+    return redirect(redirect_url)
+
+
+@flask_app.route('/playlist')
+def playlist():
+    state = request.args.get('state')
+    weather = spotify.get_weather()
+    feeling = spotify.get_feeling()
+
+    # Process with NN
+    res = neural_net.execute([weather])
+    #keys:tempo, instrumentalness,danceability,energy
+    
+    uri = spotify.obtain_playlist_from_neural_net_data(state, feeling, weather, res)
+
+    spotify.bind_playlist_uri(state, uri)
+
+    return redirect('/player?state={state}'.format(state=state))
+
+
+@flask_app.route('/player')
+def player():
+    state = request.args.get('state')
+    weather = spotify.get_weather()
+    uri = spotify.get_playlist()
+    splitted_uri = uri.split(':')
+    params = {
+        'current_weather': weather,
+        'user_id': splitted_uri[2],
+        'playlist_id': splitted_uri[4]
+    }
+    return render_template('player.html', params=params)
