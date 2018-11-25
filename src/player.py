@@ -42,7 +42,7 @@ def callback():
     state = request.args.get('state')
     auth_code = request.args.get('code')
     spotify.bind_auth_code(state, auth_code)
-    redirect_url = '/playlist?state={state}'.format(state=state)
+    redirect_url = spotify.SPOTIFY_SRV_BASE_URL.format('/playlist?state={state}').format(state=state)
     return redirect(redirect_url)
 
 
@@ -87,7 +87,7 @@ def playlist():
     playlist_id = spotify.create_playlist(state, feeling, weather)
     spotify.add_songs_to_playlist(state, playlist_id, song_list)
 
-    return redirect('/player?state={state}'.format(state=state))
+    return redirect(spotify.SPOTIFY_SRV_BASE_URL.format('/player?state={state}').format(state=state))
 
 
 @flask_app.route('/player')
