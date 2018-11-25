@@ -193,7 +193,7 @@ input[type="reset"].special,
 input[type="button"].special,
 button.special,
 .button.special {
-    background-color: #ed4933;
+    background-color: #dd6d5e;
     box-shadow: none !important;
     color: #ffffff !important;
 }
