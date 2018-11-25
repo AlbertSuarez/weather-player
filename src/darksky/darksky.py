@@ -87,7 +87,7 @@ def get_forecast(latitude="60.1705802", longitude="24.9428433"):
         hour_aux = [hourly["data"][1]["icon"], ftoc(hourly["data"][1]["temperature"])]
         hour_aux1 = [hourly["data"][2]["icon"], ftoc(hourly["data"][2]["temperature"])]
         if parse_code(hour_aux) == parse_code(hour_aux1):
-            return [parse_code(hour_aux), 60]
+            return [[parse_code(hour_aux), 60]]
         else:
             result = []
             change = abs(weight[parse_code(hour_aux)] - weight[parse_code(hour_aux1)])

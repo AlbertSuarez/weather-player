@@ -59,6 +59,11 @@ def playlist():
     elif genmode == 'predictive':
         forecast_vaisala = [[weather_vaisala, (3*60+30)*1000]]
         forecast_darksky = darksky.get_forecast()
+
+        spotify.dprint('-------')
+        spotify.dprint(forecast_darksky)
+        spotify.dprint('-------')
+
         for fc in forecast_darksky:
             fc[1] *= 60*1000
     else:
