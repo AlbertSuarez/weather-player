@@ -108,7 +108,7 @@ def train(number_of_iterations=1):
         print('Iteration '+str(t)+': ',loss_fn.item())
 
     print('DONE')
-    torch.save(model.state_dict(),('./model2.pt'))
+    torch.save(model.state_dict(),('./model.pt'))
     print('Guardado')
 
 
@@ -116,7 +116,7 @@ def train(number_of_iterations=1):
 #testing part
 def test():
     model = LinearRegression(5,4) #check this stuff
-    model.load_state_dict(torch.load('./model2.pt'))
+    model.load_state_dict(torch.load('./model.pt'))
     inputs = generate_data_execute(my_input_de_test)
     inputs = Variable(torch.as_tensor(inputs).float())
     y_pred = model(inputs)
@@ -127,7 +127,7 @@ def test():
 def execute(valores):
     diccionari =dict()
     model = LinearRegression(5,4) #check this stuff
-    model.load_state_dict(torch.load('./model2.pt'))
+    model.load_state_dict(torch.load('src/neural_net/model.pt'))
     inputs = generate_data_execute(valores)
     inputs = Variable(torch.as_tensor(inputs).float())
     y_pred = model(inputs)

@@ -27,10 +27,10 @@ SPOTIFY_CLIENT_ID = 'ca9e01ed39da4b3ab0ef6e69a9d9fd0a'
 SPOTIFY_CLIENT_SECRET = 'b67a0a50eca84387838c31fec4c2494b'
 SPOTIFY_STATE_DICT = {}
 SPOTIFY_SEEDS = {
-    "HAPPY":   "3AszgPDZd9q0DpDFt4HFBy",  # OutKast - Hey Ya!
+    "HAPPY":   "6JV2JOEocMgcZxYSZelKcc",  # OutKast - Hey Ya!
     "RELAXED": "3kxfsdsCpFgN412fpnW85Y",  # Childish Gambino - Redbone
-    "ACTIVE":   "6K4t31amVTZDgR3sKmwUJJ",  # Tame Impala - The Less I Know The Better
-    "SAD":     "5wj4E6IsrVtn8IBJQOd0Cl",  # Oasis - Wonderwall
+    "ACTIVE":   "0BomfsUcw03fQPKK668Etn",  # Rudimental - Feel the Love
+    "SAD":     "612VcBshQcy4mpB2utGc3H",  # Eric Clapton - Tears in Heaven
     "ANGRY":   "2DlHlPMa4M17kufBvI2lEN"   # System Of A Down - Chop Suey!
 }
 
