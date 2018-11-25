@@ -10,13 +10,24 @@ import sys
 import json
 import math
 
-from src import *
+# from src import *    
 
-plot = dict()
-    
+WET = "wet"
+GLOOMY = "gloomy"
+FREEZE = "freezing"
+HOT = "hot"
+NICE = "nice"
+
+HAPPY = "happy"
+RELAXED = "relaxed"
+SAD = "sad"
+TIRED ="tired"
+ANGRY = "angry"
+
+
 #TESTING INPUT OF TRAINING AND TESTING
-my_input_de_prueba = [WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY, WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,NICE, GLOOMY,NICE, GLOOMY,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY,NICE,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY, GLOOMY,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY]
-my_input_de_test = [GLOOMY]
+my_input_de_prueba = [WET, GLOOMY, HOT,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,NICE, GLOOMY,NICE, GLOOMY,WET,FREEZE, WET,FREEZE,HOT,NICE, GLOOMY, HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY,NICE,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY, GLOOMY,WET,FREEZE,HOT,WET,FREEZE,HOT,NICE, GLOOMY,NICE, GLOOMY]
+my_input_de_test = [GLOOMY, NICE, FREEZE,HOT,WET]
 
 #MODEL
 class LinearRegression(nn.Module):
@@ -35,7 +46,7 @@ def generate_data():
 
     for i in range(len(my_input_de_prueba)):
         my_x.append(generate_numpyarray(my_input_de_prueba[i]))
-        my_y.append(get_features2(my_input_de_prueba[i],random.randint(0, 1)))
+        my_y.append(get_features2(my_input_de_prueba[i]))
     return my_x, my_y    
 
 #GENERATING THE DATA INPUT FOR THE EXECUTION
@@ -105,11 +116,10 @@ def train(number_of_iterations=1):
         optimizer.zero_grad()
         loss_fn.backward()
         optimizer.step()
-        plot[t] = loss_fn.item()
         print('Iteration '+str(t)+': ',loss_fn.item())
 
     print('DONE')
-    torch.save(model.state_dict(),('src/neural_net/model.pt'))
+    torch.save(model.state_dict(),('./model2.pt'))
     print('Guardado')
 
 
@@ -117,7 +127,7 @@ def train(number_of_iterations=1):
 #testing part
 def test():
     model = LinearRegression(5,4) #check this stuff
-    model.load_state_dict(torch.load('./model.pt'))
+    model.load_state_dict(torch.load('./model2.pt'))
     inputs = generate_data_execute(my_input_de_test)
     inputs = Variable(torch.as_tensor(inputs).float())
     y_pred = model(inputs)
@@ -128,7 +138,7 @@ def test():
 def execute(valores):
     diccionari =dict()
     model = LinearRegression(5,4) #check this stuff
-    model.load_state_dict(torch.load('src/neural_net/model.pt'))
+    model.load_state_dict(torch.load('./model2.pt'))
     inputs = generate_data_execute(valores)
     inputs = Variable(torch.as_tensor(inputs).float())
     y_pred = model(inputs)
@@ -137,6 +147,7 @@ def execute(valores):
     diccionari["instrumentalness"]= y[0][1]
     diccionari["danceability"]=y[0][2]
     diccionari["energy"]=y[0][3]
+    print(diccionari)
     return diccionari
 
 
@@ -181,58 +192,177 @@ def get_features(y):
             
     
 #get features in a numpy array 
-def get_features2(y,i):
+def get_features2(y):
     if y==WET:
+        i = random.randint(0, 7)
         if(i==0):
             tempo = (123.844) 
             instrumentalness= 0.883
             energy= 0.344
             danceability= 0.576
-        else :
+        elif(i==1) :
             tempo = 84.996
             instrumentalness=0
             danceability = 0.642
             energy = 0.289
+        elif(i==2):
+            tempo=138.265
+            instrumentalness=0.00195
+            energy=0.418
+            danceability= 0.209
+        elif(i==3):
+            tempo = 132.0
+            instrumentalness=0.898
+            danceability=0.544
+            energy=0.0508
+        elif(i==4):
+            tempo= 83.14
+            danceability= 0.521
+            energy=0.336
+            instrumentalness=0.0121
+        elif(i==5):
+            tempo = 159.646
+            danceability=0.35
+            energy=0.42
+            instrumentalness=0.898
+        elif(i==6):
+            tempo:159.646
+            energy:0.42
+            danceability:0.35
+            instrumentalness:0.898
+        else:
+            danceability:0.64
+            energy:0.743
+            instrumentalness:0
+            tempo:122.035
+        
         a = np.array([tempo,instrumentalness,danceability,energy])
+
         return a
+
     elif y==NICE:
+        i = random.randint(0, 6)
         if(i==0):
             energy = 0.457
             tempo=150.953
             danceability=0.686
             instrumentalness=0
-        else:
+        elif(i==1):
             tempo = (118.05)
             instrumentalness=0.00000583
             energy=0.792
             danceability= 0.829
-        a = np.array([tempo,instrumentalness,danceability,energy])   
-        return a
-    elif y==GLOOMY:
-        tempo = (174.117)
-        instrumentalness=0.000366
-        energy=0.0581
-        danceability=0.345
-        a = np.array([tempo,instrumentalness,danceability,energy])   
-        return a
-    elif y==HOT:
-        tempo = (129.221)
-        instrumentalness=0
-        energy=0.887
-        danceability=0.869
-        a = np.array([tempo,instrumentalness,danceability,energy])   
-        return a
-    elif y==FREEZE:
-        tempo = (128.993)
-        instrumentalness=0.888
-        energy=0.175
-        danceability=0.371
+        elif(i==2):
+            tempo = 138.265
+            danceability=0.209
+            energy=0.418
+            instrumentalness= 0.00195
+        elif(i==3):
+            tempo=166.72
+            energy=0.176
+            danceability=0.287
+            instrumentalness=0.718
+        elif(i==4):
+            tempo=120.175
+            energy=0.376
+            danceability=0.584
+            instrumentalness=0
+        elif(i==5):
+            tempo=147.21
+            energy=0.607
+            danceability=0.386
+            instrumentalness=0
+        else:
+            tempo=116.047
+            danceability=0.794
+            instrumentalness=0
+            energy=0.811
         a = np.array([tempo,instrumentalness,danceability,energy])   
         return a
 
+    elif y==GLOOMY:
+        i = random.randint(0, 4)
+        if(i==0):
+            tempo = (174.117)
+            instrumentalness=0.000366
+            energy=0.0581
+            danceability=0.345
+        elif(i==1):
+            temp=:77.748
+            instrumentalness=0
+            danceability=0.581
+            energy=0.163
+        elif(i==2):
+            tempo=166.467
+            instrumentalness=0
+            energy=0.29
+            danceability=0.379
+        elif(i==3):
+            tempo=109.942
+            instrumentalness=0.619
+            energy=0.585
+            danceability=0.775
+        else:
+            danceability=0.38
+            energy=0.846
+            tempo=89.98
+            ínstrumentalness=0.611
+         a = np.array([tempo,instrumentalness,danceability,energy])   
+        return a
+    elif y==HOT:
+        i = random.randint(0, 3)
+        if(i==0):
+            tempo = (129.221)
+            instrumentalness=0
+            energy=0.887
+            danceability=0.869
+        elif(i==1):
+            tempo=159.911
+            instrumentalness=0
+            energy=0.757
+            danceability=0.652
+        elif(i==2):
+            tempo=106.978
+            instrumentalness= 0
+            danceability=0.576
+            energy=0.579
+        else:
+            tempo=105.13
+            instrumentalness=0
+            danceability=0.757
+            energy=0.899
+
+        a = np.array([tempo,instrumentalness,danceability,energy])   
+        return a
+
+    elif y==FREEZE:
+        i = random.randint(0, 3)
+        if(i==0):
+            tempo = (128.993)
+            instrumentalness=0.888
+            energy=0.175
+            danceability=0.371
+        elif(i==1):
+            tempo:130.29
+            energy=0.36
+            instrumentalness=0
+            danceability=0.599
+        elif(i==2):
+            tempo=159.871
+            energy=0.712
+            instrumentalness=0.0
+            danceability=0.537
+        else:
+            tempo:143.808
+            energy:0.489
+            danceability:0.439
+            instrumentalness=0.0
+        a = np.array([tempo,instrumentalness,danceability,energy])   
+        return a
 
 #this functions gives us plots about each genre and features we are analysing
 def plots(a):
+    a = a.detach().numpy().tolist()
 
     #GLOOMY PLOT
     performance = [a[0][1],a[0][2],a[0][3]]
@@ -252,7 +382,7 @@ def plots(a):
     plt.title('Nice')
     plt.show()
 
-    #FREEZE PLOT
+    # #FREEZE PLOT
     performance = [a[2][1],a[2][2],a[2][3]]
     objects =('Instrumentalness','Energy','Danceability')
     plt.bar(np.arange(len(objects)), performance, align='center', alpha=0.5)
@@ -261,7 +391,7 @@ def plots(a):
     plt.title('Freeze')
     plt.show()
 
-    #HOT PLOT
+    # #HOT PLOT
     performance = [a[3][1],a[3][2],a[3][3]]
     objects =('Instrumentalness','Energy','Danceability')
     plt.bar(np.arange(len(objects)), performance, align='center', alpha=0.5)
@@ -270,13 +400,13 @@ def plots(a):
     plt.title('Hot')
     plt.show()
 
-     #WET PLOT
+    #  #WET PLOT
     performance = [a[4][1],a[4][2],a[4][3]]
     objects =('Instrumentalness','Energy','Danceability')
     plt.bar(np.arange(len(objects)), performance, align='center', alpha=0.5)
     plt.xticks(np.arange(len(objects)), objects)
     plt.ylabel('Value')
-    plt.title('Hot')
+    plt.title('Wet')
     plt.show()
 
 #SPOTIFY URI WHERE WE PICK THE VALUES 
@@ -290,9 +420,28 @@ nice='spotify:track:0tZkVZ9DeAa0MNK2gY5NtV'
 
 
 if __name__ == "__main__":
-    train(3000)
+    train(10000)
     # si vull fer-ho hauré de fer un test abans plots(result)
+    res = test()
+    plots(res)
+
+
+    print("WET weather")
     execute(["wet"])
+    
+    print("NICE weather")
+    execute(["nice"])
+
+    print("GLOOMY weather")
+    execute(["gloomy"])
+    
+    print("FREEZE weather")
+    execute(["freeze"])
+    
+    print("HOT  weather")
+    execute(["hot"])
+    
+    
     
    
 
